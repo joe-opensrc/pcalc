@@ -5,6 +5,11 @@ object maths extends App {
     if (n == 0) { return 1 } else { n * fact(n-1) } 
   }
 
+  def factFold(n: BigInt): BigInt = { 
+    val one: BigInt = 1
+    return (one to n).foldLeft(one)( (a,b) => (a*b) )
+  }
+
   def pnk( n: BigInt, k: BigInt ): BigInt = {
     if ( k > n ) { return 0 } else {
      return fact(n) / fact(n-k) 
