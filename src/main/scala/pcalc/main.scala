@@ -1,6 +1,6 @@
 package pcalc
 
-object maths extends App {
+object maths {
   def fact(n: BigInt): BigInt = {
     if (n == 0) { return 1 } else { n * fact(n-1) } 
   }
@@ -22,11 +22,11 @@ object maths extends App {
     }
   }
 
-  val x: Int = 52
-
-  printf( "fact(%d) == %d\n", x, factFold(x) )
-  printf( "pnk(5,2) == %d\n", pnk(5,2) )
-  printf( "nck(52,2) == %d\n", nck(52,2) )
+  def main( args: Array[String] ) = { 
+    val s = args.toList(0)
+    val x = BigInt(s)
+    printf("fact(%d) == %d\n", x, factFold(x))
+  }
 
 }
 
