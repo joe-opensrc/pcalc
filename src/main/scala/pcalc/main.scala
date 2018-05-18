@@ -22,8 +22,9 @@ object maths extends App {
     }
   }
 
+  val x: Int = 52
 
-  printf( "fact(52) == %d\n", fact(52) )
+  printf( "fact(%d) == %d\n", x, factFold(x) )
   printf( "pnk(5,2) == %d\n", pnk(5,2) )
   printf( "nck(52,2) == %d\n", nck(52,2) )
 
