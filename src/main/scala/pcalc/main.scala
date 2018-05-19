@@ -30,29 +30,14 @@ class Card( var srep: String ) {
   private var f: Int = 0
   private var s: Int = 0
 
-/* 
-  def this( _f: Int, _s: Int )  = { 
+  def this( t: (Char, Char)  )  = { 
     this("")
     this.srep = "Tc" 
   }
 
 //  def getFace(): Int = {  }
-*/    
+    
 }
-
-
-
-/*
-class Card( private var _srep: String ){
-
-  private var _v: Int = 0
-  private var _s: Int = 0
-
-  def srep = _srep
-  def srep_=( s: String ) = { _srep = s }
-
-}
-*/
 
 object maths {
   def fact(n: BigInt): BigInt = {
