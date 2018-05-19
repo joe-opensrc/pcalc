@@ -2,8 +2,7 @@ package pcalc
 
 class CardPivot() {
 
-
-  val CardStringSuits = "HCDS"
+  val CardStringSuits = "hcds"
   val CardStringFaces = "23456789TJQKA"
   val CardTupleSeq: Seq[(Char,Char)] = for { f <- CardStringSuits; s <- CardStringFaces } yield (s,f)   
 
@@ -18,6 +17,10 @@ class CardPivot() {
   def tupleToString( t: (Char,Char) ): String = {
     val (x,y) = t
     return x + "" + y.toLower
+  }
+
+  def stringToTuple( srep: String ): (Char,Char) = {
+    return (srep(0),srep(1).toLower)
   }
 
 }
@@ -122,7 +125,7 @@ object maths {
     var cp = new CardPivot()
 
     println(cp.tupleToString(cp.intToTuple(39)))
-
+    println(cp.stringToTuple( c.srep ))
   //val s = args.toList(0)
   //val x = s.toInt
   //val x = BigInt(s)
