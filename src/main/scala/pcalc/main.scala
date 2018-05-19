@@ -138,6 +138,6 @@ object maths {
   def main( args: Array[String] ): Unit = { 
     var c = new Card(('2','h'))  //"As")
     println( CardPivot.tupleToInt( c.tuple  ))
-
+    for { c <- CardPivot.CardTupleSeq } yield {println( c ) } 
   }
 }
