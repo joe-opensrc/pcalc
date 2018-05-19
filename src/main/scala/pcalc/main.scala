@@ -10,32 +10,63 @@ object CardPivot {
     return CardTupleSeq.indexOf(t)
   }
 
-  def intToTuple( cv: Int ): (Char,Char) = {
-    return CardTupleSeq(cv) 
-  }
-
   def tupleToString( t: (Char,Char) ): String = {
     val (x,y) = t
     return x + "" + y.toLower
   }
 
-  def stringToTuple( srep: String ): (Char,Char) = {
-    return (srep(0),srep(1).toLower)
+  def stringToTuple( s: String ): (Char,Char) = {
+    return (s(0),s(1).toLower)
   }
 
+  def stringToInt( s: String ): Int = {
+    return tupleToInt( stringToTuple( s ) )
+  }
+
+  def intToString( i: Int ): String = {
+    return tupleToString( intToTuple(i) )
+  }
+
+  def intToTuple( i: Int ): (Char,Char) = {
+    return CardTupleSeq(i) 
+  }
 }
 
-class Card( var srep: String ) { 
+class Card(  ) { 
 
   private var f: Int = 0
   private var s: Int = 0
+  private var _i: Int = 0
+  private var _tuple: (Char, Char) = ('A','c')
+  private var _srep: String = ""
 
-  def this( t: (Char, Char)  )  = { 
-    this("")
-    this.srep = "Tc" 
+  def tuple = _tuple
+  def tuple_= ( t: (Char,Char) ) = { _tuple = t }
+
+  def srep = _srep
+  def srep_= ( s: String ) = { _srep = s }
+
+  def i = _i
+  def i_= ( i: Int ) = { _i = i }
+
+  def this( s: String ) = {
+    this()
+    this._srep = s
+    this._tuple = CardPivot.stringToTuple(s)  
   }
 
-//  def getFace(): Int = {  }
+  def this( t: (Char, Char)  )  = { 
+    this()
+    this._srep = CardPivot.tupleToString(t)
+    this._tuple = t
+  }
+
+  def this( i: Int ) = {
+    this()
+    this._srep = CardPivot.intToString(i)
+    this._tuple = CardPivot.intToTuple(i)
+    this._i = i
+  }
     
 }
 
@@ -105,8 +136,8 @@ object maths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-    var c = new Card("As")
-    println( CardPivot.stringToTuple( c.srep ) )
+    var c = new Card(('2','h'))  //"As")
+    println( CardPivot.tupleToInt( c.tuple  ))
 
   }
 }
