@@ -138,6 +138,7 @@ object maths {
   def main( args: Array[String] ): Unit = { 
     var c = new Card(('2','h'))  //"As")
     println( CardPivot.tupleToInt( c.tuple  ))
-    for { c <- CardPivot.CardTupleSeq } yield {println( c ) } 
+    var full_deck_shuffled = scala.util.Random.shuffle( for { c <- CardPivot.CardTupleSeq } yield { c } )
+    println( full_deck_shuffled )
   }
 }
