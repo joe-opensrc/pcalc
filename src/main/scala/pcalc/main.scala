@@ -1,6 +1,6 @@
 package pcalc
 
-class CardPivot() {
+object CardPivot {
 
   val CardStringSuits = "hcds"
   val CardStringFaces = "23456789TJQKA"
@@ -119,21 +119,9 @@ object maths {
   final val RATIO_HANDS_POCKET_FLUSHDRAW: Double = 0.06862745098039215
 //  final val RATIO_HANDS_POCKET_
 
-  def main( args: Array[String] ) = { 
-  //var cp = new CardParser()
+  def main( args: Array[String] ): Unit = { 
     var c = new Card("As")
-    var cp = new CardPivot()
-
-    println(cp.tupleToString(cp.intToTuple(39)))
-    println(cp.stringToTuple( c.srep ))
-  //val s = args.toList(0)
-  //val x = s.toInt
-  //val x = BigInt(s)
-  //printf("P(pair) == %s\n", choosePocketPair( x ) )
-  //printf("P(pair) == %s\n", getPocketProbability( 52, 14, 13 )) //14.0/52.0 * ( 13.0/51.0 ) )
-  //println(getPocketPairProbability())
-  //println(getPocketSuitedProbability())
-  //println(nck(52,2))
+    println( CardPivot.stringToTuple( c.srep ) )
 
   }
 }
