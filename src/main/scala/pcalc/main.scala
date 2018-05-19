@@ -82,6 +82,16 @@ object maths {
     return (ways1.toDouble / avail * ways2.toDouble / (avail-1.0)) * 100
   }
 
+  final val PROB_POCKET_SUITED_ANY = (52, 52, 3) // (TOTAL_NO_OF_CARDS, TOTAL_NO_OF_CARDS, NO_OF_CARDS_PER_SUIT-1
+
+  def getPocketProbability( cfreqs: ( Int, Int, Int ) ): Double = {
+    val avail = cfreqs._1
+    val ways1 = cfreqs._2
+    val ways2 = cfreqs._3
+
+    return getPocketProbability( avail, ways1, ways2 )
+  }
+
   final val TOTAL_NO_OF_CARDS = 52
   final val NO_OF_SUITS = 4
   final val NO_OF_EACH_CARD = NO_OF_SUITS
