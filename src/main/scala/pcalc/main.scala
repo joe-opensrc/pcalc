@@ -196,7 +196,7 @@ object CardMaths {
     var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
 //    var (hand, rest) = (full_deck.take(2), full_deck.drop(2))
     var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
-    hand.h(0)isFaceUp = true
+    hand.h(0).isFaceUp = true
     hand.h(1).isFaceUp = true 
     printf("hand: %s, rest: %s\n", hand, rest)
 
