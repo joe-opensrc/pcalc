@@ -68,6 +68,10 @@ class Card(  ) {
     this._i = i
   }
     
+  override def toString(): String = {
+    return this._srep
+  }
+
 }
 
 object maths {
