@@ -82,7 +82,7 @@ class Card(  ) {
 
 }
 
-object maths {
+object CardMaths {
   def fact(n: BigInt): BigInt = {
     if (n == 0) { return 1 } else { n * fact(n-1) } 
   }
