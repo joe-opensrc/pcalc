@@ -4,7 +4,15 @@ object CardPivot {
 
   val CardStringSuits = "hcds"
   val CardStringFaces = "23456789TJQKA"
-  val CardTupleSeq: Seq[(Char,Char)] = for { f <- CardStringSuits; s <- CardStringFaces } yield (s,f)   
+  val CardTupleSeq: DeckSeqTuples = for { f <- CardStringSuits; s <- CardStringFaces } yield { (s,f) }   
+  val DeckOfCards: Deck = for { ct <- CardTupleSeq } yield { new Card(ct) }
+
+  type DeckSeqTuples = Seq[(Char,Char)]
+  type Deck = Seq[Card]
+
+  def shuffle( d: Deck ): Deck = {
+    scala.util.Random.shuffle( d )
+  } 
 
   def tupleToInt( t: (Char,Char) ): Int = {
     return CardTupleSeq.indexOf(t)
