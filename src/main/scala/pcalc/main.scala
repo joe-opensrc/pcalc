@@ -31,7 +31,12 @@ class Hand() {
 object Dealer {
 
   var deck = CardPivot.DeckOfCards
-  
+ 
+//  var playerQueue = Q
+//  var handsQueue = Q
+//  deal( playerEntity, n )
+
+ 
   def shuffle( d: types.Deck = this.deck): Deck = {
     scala.util.Random.shuffle( d )
   } 
@@ -41,6 +46,10 @@ object Dealer {
     new Hand( d, n )
   }
 
+  def deal( n: Int ): Hand = {
+    val h = this.deal( this.deck, n ) 
+    h
+  }
 
 }
 
