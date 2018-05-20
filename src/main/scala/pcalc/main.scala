@@ -1,18 +1,35 @@
 package pcalc
+import pcalc.types._
 
-object CardPivot {
-
-  val CardStringSuits = "hcds"
-  val CardStringFaces = "23456789TJQKA"
-  val CardTupleSeq: DeckSeqTuples = for { f <- CardStringSuits; s <- CardStringFaces } yield { (s,f) }   
-  val DeckOfCards: Deck = for { ct <- CardTupleSeq } yield { new Card(ct) }
+package object types {
 
   type DeckSeqTuples = Seq[(Char,Char)]
   type Deck = Seq[Card]
 
-  def shuffle( d: Deck ): Deck = {
+}
+
+object Dealer {
+
+  var deck = CardPivot.DeckOfCards
+  
+  def shuffle( d: types.Deck = this.deck): Deck = {
     scala.util.Random.shuffle( d )
   } 
+
+  /* external state*/
+  def deal( d: Deck, n: Int ): Deck = {
+    d.take(n)
+  }
+
+
+}
+
+object CardPivot {
+
+  val CardStringSuits = "♠♣♥♦"
+  val CardStringFaces = "23456789TJQKA"
+  val CardTupleSeq: DeckSeqTuples = for { f <- CardStringSuits; s <- CardStringFaces } yield { (s,f) }   
+  val DeckOfCards: Deck = for { ct <- CardTupleSeq } yield { new Card(ct) }
 
   def tupleToInt( t: (Char,Char) ): Int = {
     return CardTupleSeq.indexOf(t)
@@ -40,13 +57,18 @@ object CardPivot {
   }
 }
 
-class Card(  ) { 
+class Card() { 
 
   private var f: Int = 0
   private var s: Int = 0
   private var _i: Int = 0
-  private var _tuple: (Char, Char) = ('A','c')
+  private var _tuple: (Char, Char) = ('A','s')
   private var _srep: String = ""
+
+  private var _isFaceUp = false
+
+  def isFaceUp = _isFaceUp
+  def isFaceUp_= ( b: Boolean ) = { _isFaceUp = b } 
 
   def tuple = _tuple
   def tuple_= ( t: (Char,Char) ) = { _tuple = t }
@@ -77,7 +99,10 @@ class Card(  ) {
   }
     
   override def toString(): String = {
-    return this._srep
+    if (this._isFaceUp) { 
+      return this._srep
+    } 
+      return "🃧"
   }
 
 }
@@ -148,9 +173,21 @@ object CardMaths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-    var full_deck = CardPivot.shuffle(CardPivot.DeckOfCards)
-    var (hand, rest) = (full_deck.head, full_deck.tail)
+    var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
+//    var (hand, rest) = (full_deck.take(2), full_deck.drop(2))
+    var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
+   hand(0).isFaceUp = true
+    hand(1).isFaceUp = true 
     printf("hand: %s, rest: %s\n", hand, rest)
 
   }
 }
+
+/*
+class Hand() {
+ 
+  private val 
+  def this() = {   } 
+
+}
+*/
