@@ -148,9 +148,9 @@ object CardMaths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-    var c = new Card(('2','h'))  //"As")
-    println( CardPivot.tupleToInt( c.tuple  ))
-    var full_deck_shuffled = scala.util.Random.shuffle( for { c <- CardPivot.CardTupleSeq } yield { c } )
-    println( full_deck_shuffled )
+    var full_deck = CardPivot.shuffle(CardPivot.DeckOfCards)
+    var (hand, rest) = (full_deck.head, full_deck.tail)
+    printf("hand: %s, rest: %s\n", hand, rest)
+
   }
 }
