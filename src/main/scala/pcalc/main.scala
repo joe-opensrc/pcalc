@@ -8,6 +8,26 @@ package object types {
 
 }
 
+
+class Hand() {
+ 
+  private val _n: Int = 2
+  private var _h: Deck = null
+
+  def this( d: Deck, n: Int ) = { 
+    this()
+    this._h = d.take(n) 
+  } 
+
+  def h = _h
+
+  override def toString() = { 
+    "[" + _h.mkString("|") + "]"
+  }
+
+}
+
+
 object Dealer {
 
   var deck = CardPivot.DeckOfCards
@@ -17,8 +37,8 @@ object Dealer {
   } 
 
   /* external state*/
-  def deal( d: Deck, n: Int ): Deck = {
-    d.take(n)
+  def deal( d: Deck, n: Int ): Hand = {
+    new Hand( d, n )
   }
 
 
@@ -176,18 +196,10 @@ object CardMaths {
     var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
 //    var (hand, rest) = (full_deck.take(2), full_deck.drop(2))
     var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
-   hand(0).isFaceUp = true
-    hand(1).isFaceUp = true 
+    hand.h(0)isFaceUp = true
+    hand.h(1).isFaceUp = true 
     printf("hand: %s, rest: %s\n", hand, rest)
 
   }
 }
 
-/*
-class Hand() {
- 
-  private val 
-  def this() = {   } 
-
-}
-*/
