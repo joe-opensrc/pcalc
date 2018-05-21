@@ -99,7 +99,7 @@ class Card() {
   private var _tuple: (Char, Char) = ('A','s')
   private var _srep: String = ""
 
-  private var _isFaceUp = false
+  private var _isFaceUp = true //false
 
   def isFaceUp = _isFaceUp
   def isFaceUp_= ( b: Boolean ) = { _isFaceUp = b } 
