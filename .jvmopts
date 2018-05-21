@@ -1,1 +1,2 @@
 -Dsbt.watch.mode=polling
+-Divy.home=./.ivy2
