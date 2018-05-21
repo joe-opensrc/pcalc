@@ -19,6 +19,11 @@ class Hand() {
     this._h = d.take(n) 
   } 
 
+  def this( d: Deck ) = {
+    this()
+    this._h = d
+  }
+
   def h = _h
 
   override def toString() = { 
