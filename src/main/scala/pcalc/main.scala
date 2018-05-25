@@ -240,12 +240,14 @@ object CardMaths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-    var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
-//    var (hand, rest) = (full_deck.take(2), full_deck.drop(2))
-    var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
-    hand.h(0).isFaceUp = true
-    hand.h(1).isFaceUp = true 
-    printf("hand: %s, rest: %s\n", hand, rest)
+//    var deck = Dealer.newDeck
+//    var hand = new Hand()
+
+    var dealer = Dealer.instance(Dealer.START_SHUFFLED)
+    var deck   = dealer.deck
+    
+    printf("%s,%s,%s\n", dealer.deal(2), dealer.deal(2), dealer.deck ) 
+//    printf("hand: %s, rest: %s\n", hand, rest)
 
   }
 }
