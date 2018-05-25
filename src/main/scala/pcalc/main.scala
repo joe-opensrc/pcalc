@@ -240,14 +240,11 @@ object CardMaths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-//    var deck = Dealer.newDeck
-//    var hand = new Hand()
 
     var dealer = Dealer.instance(Dealer.START_SHUFFLED)
     var deck   = dealer.deck
     
     printf("%s,%s,%s\n", dealer.deal(2), dealer.deal(2), dealer.deck ) 
-//    printf("hand: %s, rest: %s\n", hand, rest)
 
   }
 }
