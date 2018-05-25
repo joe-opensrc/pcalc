@@ -8,11 +8,10 @@ package object types {
 
 }
 
-
 class Hand() {
  
   private val _n: Int = 2
-  private var _h: Deck = null
+  private var _h: Deck = List()
 
   def this( d: Deck, n: Int ) = { 
     this()
@@ -22,6 +21,14 @@ class Hand() {
   def this( d: Deck ) = {
     this()
     this._h = d
+  }
+
+  def add( c: Card ): Unit = {
+    this._h = c :: this._h.toList
+  }
+
+  def add( hand: Hand): Unit = {
+    this._h = this._h ++ hand.h 
   }
 
   def h = _h
@@ -53,7 +60,19 @@ object Dealer {
 
   def deal( n: Int ): Hand = {
     val h = this.deal( this.deck, n ) 
-    h
+    return h
+  }
+
+  def deal( h: Hand, c: Card ): Hand = {
+//    println("deck.unf: " + this.deck)
+//    println("deck.filterNot" + this.deck.filterNot( _.equals(c) ) )
+    h.add(c)
+    return h
+  }
+
+  def deal( h: Hand ): Hand = {
+    h.add( this.deal(1) )
+    return h
   }
 
 }
@@ -207,12 +226,24 @@ object CardMaths {
 //  final val RATIO_HANDS_POCKET_
 
   def main( args: Array[String] ): Unit = { 
-    var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
+      var full_deck = Dealer.shuffle(CardPivot.DeckOfCards)
 //    var (hand, rest) = (full_deck.take(2), full_deck.drop(2))
-    var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
-    hand.h(0).isFaceUp = true
-    hand.h(1).isFaceUp = true 
+//    var (hand, rest) = ( Dealer.deal( full_deck, 2 ), full_deck.drop(2) )
+//    hand.h(0).isFaceUp = true
+//    hand.h(1).isFaceUp = true 
+//    println("deck.full == " + Dealer.deck)
+//    val hand = Dealer.deal( full_deck, new Card("Td"))
+    val hand = Dealer.deal(2)
+    hand.add( new Card("7s") )
+
+    val rest = Dealer.deck
     printf("hand: %s, rest: %s\n", hand, rest)
+
+    val a = new Card("Td")
+    println(CardPivot.stringToInt( a.srep ))
+    val b = new Card("Td")
+
+    assert( a.equals(b) )
 
   }
 }
