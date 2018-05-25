@@ -35,28 +35,56 @@ class Hand() {
 
 object Dealer {
 
-  var deck = CardPivot.DeckOfCards
- 
-//  var playerQueue = Q
-//  var handsQueue = Q
-//  deal( playerEntity, n )
+  final val START_UNSHUFFLED: Int = 0
+  final val START_SHUFFLED: Int = 1
 
- 
-  def shuffle( d: types.Deck = this.deck): Deck = {
+  def newDeck: Deck         = { CardPivot.DeckOfCards }
+  def newDeckShuffled: Deck = { this.shuffle( CardPivot.DeckOfCards ) } 
+
+  def shuffle( d: Deck ): Deck = {
     scala.util.Random.shuffle( d )
   } 
 
-  /* external state*/
-  def deal( d: Deck, n: Int ): Hand = {
-    new Hand( d, n )
+  def deal( d: Deck, n: Int ): (Hand,Deck) = {
+    ( new Hand( d.take(n) ), d.drop(n) )
+  }
+
+  def instance( start_type: Int = START_UNSHUFFLED ) = {
+    new Dealer( start_type )
+  }
+
+
+}
+
+class Dealer() { 
+
+  private var _deck: Deck = Dealer.newDeck
+
+  def this( start_type: Int = 0 ) = {
+    this()
+    start_type match {
+      case Dealer.START_SHUFFLED => 
+        this._deck = Dealer.newDeckShuffled 
+      case _ => 
+    }
+  }
+
+  def shuffle(): Unit = {
+    this._deck = Dealer.shuffle( _deck ) 
+  }
+
+  def deck: Deck = {
+    this._deck
   }
 
   def deal( n: Int ): Hand = {
-    val h = this.deal( this.deck, n ) 
-    h
+    val h = new Hand( this._deck.take(n) )
+    this._deck = this._deck.drop(n) 
+    return h
   }
 
 }
+
 
 object CardPivot {
 
