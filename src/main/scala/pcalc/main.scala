@@ -158,11 +158,6 @@ class Card() {
       return "🃧"
   }
 
-  override def equals( comparator: Any ): Boolean = comparator match {
-    case comparator: Card => comparator.isInstanceOf[Card] && this.srep == comparator.srep
-    case _ => false
-  }
-
 }
 
 object CardMaths {
