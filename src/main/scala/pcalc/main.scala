@@ -43,7 +43,7 @@ class Hand() {
 object Dealer {
 
   var deck = CardPivot.DeckOfCards
- 
+//  var deck = Seq( new Card("9s"), new Card("Td") )
 //  var playerQueue = Q
 //  var handsQueue = Q
 //  deal( playerEntity, n )
