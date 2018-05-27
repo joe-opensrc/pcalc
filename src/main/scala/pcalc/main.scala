@@ -13,7 +13,7 @@ package object types {
 class Hand() {
  
   private val _n: Int = 2
-  private var _h: Deck = null
+  private var _h: Deck = Seq() 
 
   def this( d: Deck, n: Int ) = { 
     this()
