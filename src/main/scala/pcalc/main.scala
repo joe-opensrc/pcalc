@@ -5,6 +5,7 @@ package object types {
 
   type DeckSeqTuples = Seq[(Char,Char)]
   type Deck = Seq[Card]
+  type Board = Deck
 
 }
 
