@@ -25,6 +25,12 @@ class Hand() {
     this._h = d
   }
 
+  def this( s: String ) = {
+    this()
+    val css = s.split('|')
+    for ( c <- css ) { this._h = this._h :+ new Card(c)   }
+  }
+
   def h = _h
 
   override def toString() = { 
