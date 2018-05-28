@@ -69,6 +69,13 @@ object Dealer {
     ( new Hand( d.take(n) ), d.drop(n) )
   }
 
+  /** needs to be admin only, made efficient **/
+  def removeHand( d: Deck, h: Hand): Deck = {
+    var r: Deck = d
+    for ( c <- h.h ){ r = r.filterNot( _.equals(c) ) }
+    return r
+  }
+
   def instance( start_type: Int = START_UNSHUFFLED ) = {
     new Dealer( start_type )
   }
@@ -102,6 +109,10 @@ class Dealer() {
     this._deck = this._deck.drop(n) 
     return h
   }
+
+  def removeHand( h: Hand ): Unit = {
+    this._deck = Dealer.removeHand( this._deck, h )
+  } 
 
 }
 
