@@ -35,6 +35,11 @@ class Hand() {
     this._h = this._h.sorted
   }
 
+  def merge( h: Hand ): Unit = {
+    this._h = this._h ++ h.h
+  }
+
+
   def h = _h
 
   override def toString() = { 
