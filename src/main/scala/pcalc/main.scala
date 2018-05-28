@@ -108,6 +108,10 @@ object CardPivot {
     return CardTupleSeq.indexOf(t)
   }
 
+  def faceValue( c: Char ): Int = {
+    return CardStringFaces.indexOf( c ) + 2
+  }
+
   def tupleToString( t: (Char,Char) ): String = {
     val (x,y) = t
     return x + "" + y.toLower
@@ -130,10 +134,10 @@ object CardPivot {
   }
 }
 
-class Card() { 
+class Card() extends Ordered [Card] { 
 
-  private var f: Int = 0
-  private var s: Int = 0
+  private var _f: Int = 0
+  private var _s: Int = 0
   private var _i: Int = 0
   private var _tuple: (Char, Char) = ('A','s')
   private var _srep: String = ""
@@ -152,16 +156,22 @@ class Card() {
   def i = _i
   def i_= ( i: Int ) = { _i = i }
 
+  def f = _f
+
+  def s = _s
+
   def this( s: String ) = {
     this()
     this._srep = s
     this._tuple = CardPivot.stringToTuple(s)  
+    this._f = CardPivot.faceValue( this._tuple._1 )
   }
 
   def this( t: (Char, Char)  )  = { 
     this()
     this._srep = CardPivot.tupleToString(t)
     this._tuple = t
+    this._f = CardPivot.faceValue( this._tuple._1 )
   }
 
   def this( i: Int ) = {
@@ -181,6 +191,23 @@ class Card() {
   override def equals( comparator: Any ): Boolean = comparator match {
     case comparator: Card => comparator.isInstanceOf[Card] && this.srep == comparator.srep
     case _ => false
+  }
+
+  override def compare( comparator: Card ): Int = {
+    val lf = this._f
+    val rf = comparator.f 
+
+    if ( lf == rf ) { 
+      return 0 
+    } else { 
+      if ( lf > rf ) {
+        return 1
+      } else {
+        return -1
+      }
+
+    }
+ 
   }
 
 }
