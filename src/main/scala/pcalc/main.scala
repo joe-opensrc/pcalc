@@ -42,6 +42,10 @@ class Hand() {
 
   def h = _h
 
+  def length(): Int = {
+    return this._h.length
+  }
+
   override def toString() = { 
     "[" + _h.mkString("|") + "]"
   }
