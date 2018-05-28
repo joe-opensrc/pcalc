@@ -31,6 +31,10 @@ class Hand() {
     for ( c <- css ) { this._h = this._h :+ new Card(c)   }
   }
 
+  def sort(): Unit = {
+    this._h = this._h.sorted
+  }
+
   def h = _h
 
   override def toString() = { 
