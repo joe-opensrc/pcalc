@@ -75,8 +75,10 @@ class Hand( private var _cs: Cards ) {
 object Main {
   def main( args: Array[String] ): Unit = {
     val c1 = new Card( Two, Heart )
-    val c2 = new Card( Two, Heart )
-    println(c1 == c2)
+    val c2 = new Card( Three, Heart )
+    val h1 = new Hand( List( c1, c2 ) )
+
+    println(h1) 
 
   }
 }
