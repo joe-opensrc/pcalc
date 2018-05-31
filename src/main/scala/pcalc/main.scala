@@ -49,10 +49,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) {
 
 object Main {
   def main( args: Array[String] ): Unit = {
-    val n = Ten
-    val m = Ten
-
-    println( n == m )
-    println(n.value)
+    val c = new Card( Two, Heart )
+    println(c)
   }
 }
