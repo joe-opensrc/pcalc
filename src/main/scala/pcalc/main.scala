@@ -1,26 +1,17 @@
 package pcalc
 
-sealed abstract class Rank( val c: Char, val order: Int ) extends Ordered[Rank] {
+sealed abstract class CardProperty( val c: Char, val v: Int ) extends Ordered[Rank] {
 
   def toChar = c 
-  def toInt = order
-  def value = order
- 
-  def compare( that: Rank ) = { this.order - that.order }
-  def equals( that: Rank ) = { this.value == that.value }
+  def value = v
+
+  def compare( that: Rank ): Int = { this.v - that.v }
+  def equals( that: Rank ): Boolean = { this.equals(that) } 
 
 }
 
-//sealed abstract class Suit( val s: Char, val order: Int ) extends Ordered[Suit] {
-//
-//  def toChar = s
-//  def toInt = order
-//  def value = order
-//  
-//  def compare( that: Suit ) = { this.order - that.order }
-//  def equals( that: Suit ) = { this.value == that.value }
-//
-//}
+sealed abstract class Rank( override val c: Char, override val v: Int ) extends CardProperty( c,v ) {}
+sealed abstract class Suit( override val c: Char, override val v: Int ) extends CardProperty( c,v ) {}
 
 case object Two   extends Rank( '2',  2 )
 case object Three extends Rank( '3',  3 )
@@ -36,6 +27,10 @@ case object Queen extends Rank( 'Q', 12 )
 case object King  extends Rank( 'K', 13 )
 case object Ace   extends Rank( 'A', 14 )
 
+case object Heart   extends Suit( 'h', 100 )
+case object Club    extends Suit( 'c', 100 )
+case object Diamond extends Suit( 'd', 100 )
+case object Spades  extends Suit( 's', 100 )
 
 object Main {
   def main( args: Array[String] ): Unit = {
