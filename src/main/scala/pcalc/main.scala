@@ -33,13 +33,17 @@ case object Club    extends Suit( '♣', 100 )
 case object Diamond extends Suit( '♦', 100 )
 case object Spades  extends Suit( '♠', 100 )
 
-class Card( private var _rank: Rank, private var _suit: Suit ) {
+class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[Card]{
 
   def rank = _rank
   def suit = _suit
 
   def rank_= ( r: Rank ) { this.rank = r }
   def suit_= ( s: Suit ) { this.suit = s }
+
+  override def compare( that: Card ): Int = {
+    that.rank.value - this.rank.value
+  }
 
   override def toString(): String = {
     return "[" + rank.toChar + "" + suit.toChar + "]"
