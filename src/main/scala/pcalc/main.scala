@@ -40,6 +40,10 @@ class Card( private var _rank: Rank, private var _suit: Suit ) {
   def rank_= ( r: Rank ) { this.rank = r }
   def suit_= ( s: Suit ) { this.suit = s }
 
+  override def toString(): String = {
+    return "[" + rank.toChar + "" + suit.toChar + "]"
+  }
+
 }
 
 object Main {
