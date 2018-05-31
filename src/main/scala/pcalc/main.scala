@@ -49,7 +49,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
   def suit_= ( s: Suit ) { this.suit = s }
 
   override def compare( that: Card ): Int = {
-    that.rank.value - this.rank.value
+    this.rank.value - that.rank.value
   }
 
   override def toString(): String = {
