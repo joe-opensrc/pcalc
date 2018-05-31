@@ -27,10 +27,11 @@ case object Queen extends Rank( 'Q', 12 )
 case object King  extends Rank( 'K', 13 )
 case object Ace   extends Rank( 'A', 14 )
 
-case object Heart   extends Suit( 'h', 100 )
-case object Club    extends Suit( 'c', 100 )
-case object Diamond extends Suit( 'd', 100 )
-case object Spades  extends Suit( 's', 100 )
+//♠♣♥♦
+case object Heart   extends Suit( '♥', 100 )
+case object Club    extends Suit( '♣', 100 )
+case object Diamond extends Suit( '♦', 100 )
+case object Spades  extends Suit( '♠', 100 )
 
 class Card( private var _rank: Rank, private var _suit: Suit ) {
 
