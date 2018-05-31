@@ -32,6 +32,16 @@ case object Club    extends Suit( 'c', 100 )
 case object Diamond extends Suit( 'd', 100 )
 case object Spades  extends Suit( 's', 100 )
 
+class Card( private var _rank: Rank, private var _suit: Suit ) {
+
+  def rank = _rank
+  def suit = _suit
+
+  def rank_= ( r: Rank ) { this.rank = r }
+  def suit_= ( s: Suit ) { this.suit = s }
+
+}
+
 object Main {
   def main( args: Array[String] ): Unit = {
     val n = Ten
