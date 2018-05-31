@@ -66,6 +66,8 @@ class Hand( private var _cs: Cards ) {
     this.cards ++ h.cards
   }
 
+  def sort: Cards = { this.cards.sorted }
+
   override def toString(): String = {
     "[" + this.cards.mkString("|") + "]" 
   }
