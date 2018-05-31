@@ -58,6 +58,20 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 }
 
+class Hand( private var _cs: Cards ) {
+
+  def cards = _cs
+
+  def merge( h: Hand ): Unit = {
+    this.cards ++ h.cards
+  }
+
+  override def toString(): String = {
+    "[" + this.cards.mkString("|") + "]" 
+  }
+
+}
+
 object Main {
   def main( args: Array[String] ): Unit = {
     val c1 = new Card( Two, Heart )
