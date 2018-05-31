@@ -6,7 +6,7 @@ sealed abstract class CardProperty( val c: Char, val v: Int ) extends Ordered[Ra
   def value = v
 
   def compare( that: Rank ): Int = { this.v - that.v }
-  def equals( that: Rank ): Boolean = { this.equals(that) } 
+  def  equals( that: Rank ): Boolean = { this.equals(that) } 
 
 }
 
