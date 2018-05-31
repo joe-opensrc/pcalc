@@ -53,7 +53,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
   }
 
   override def toString(): String = {
-    return "[" + rank.toChar + "" + suit.toChar + "]"
+    return rank.toChar + "" + suit.toChar
   }
 
 }
