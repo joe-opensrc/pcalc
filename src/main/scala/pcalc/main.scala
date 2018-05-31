@@ -1,4 +1,11 @@
 package pcalc
+import pcalc.types._
+
+package object types {
+  type Cards = Seq[Card]
+}
+
+  
 
 sealed abstract class CardProperty( val c: Char, val v: Int ) extends Ordered[Rank] {
 
