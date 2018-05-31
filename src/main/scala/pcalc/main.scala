@@ -53,7 +53,9 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 object Main {
   def main( args: Array[String] ): Unit = {
-    val c = new Card( Two, Heart )
-    println(c)
+    val c1 = new Card( Two, Heart )
+    val c2 = new Card( Two, Heart )
+    println(c1 == c2)
+
   }
 }
