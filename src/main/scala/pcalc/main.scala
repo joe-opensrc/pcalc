@@ -117,13 +117,17 @@ object Main {
 
   def main( args: Array[String] ): Unit = {
 
-    val deck = for { s <- Suit.values; r <- Rank.values  } yield { new Card(r,s) }
+//    val deck = Dealer.shuffle( Dealer.newDeck )
+    val deck = Dealer.newDeck  
 
-    val c1 = new Card( Four, Heart )
+    val c1 = new Card( Two, Heart )
     val c2 = new Card( Three, Heart )
     val h1 = new Hand( List( c1, c2 ) )
+    val h2 = Dealer.makeHand( Dealer.deal( deck, 2 ) )
 
-    println(deck) 
+    println( h1 + "--" + h2 )
+    println( h1 == h2 )
+    println(h1.sorted + " " + deck) 
 
   }
 }
