@@ -66,6 +66,11 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
     this.rank.value - that.rank.value
   }
 
+  override def equals( that: Any ): Boolean = that match {
+    case that: Card => that.isInstanceOf[Card] && this.rank == that.rank && this.suit == that.suit 
+    case _ => false
+  }
+
   override def toString(): String = {
     return rank.toChar + "" + suit.toChar
   }
