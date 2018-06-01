@@ -54,7 +54,7 @@ case object Suit extends Enum[Suit] {
 
 }
 
-class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[Card]{
+class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[Card] {
 
   def rank = _rank
   def suit = _suit
