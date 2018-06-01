@@ -149,16 +149,20 @@ object Main {
   def main( args: Array[String] ): Unit = {
 
 //    val deck = Dealer.shuffle( Dealer.newDeck )
-    val deck = Dealer.newDeck  
+    val dealer = new Dealer()
 
     val c1 = new Card( Two, Heart )
     val c2 = new Card( Three, Heart )
+    val c3 = new Card( Five, Heart )
+
     val h1 = new Hand( List( c1, c2 ) )
-    val h2 = Dealer.makeHand( Dealer.deal( deck, 2 ) )
+
+    dealer.ensureMissing( c3 )
+    val h2 = dealer.deal( 2 ) 
 
     println( h1 + "--" + h2 )
     println( h1 == h2 )
-    println(h1.sorted + " " + deck) 
+    println( dealer.deck ) 
 
   }
 }
