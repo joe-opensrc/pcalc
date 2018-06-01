@@ -103,6 +103,13 @@ class Hand( private var _cs: Cards ) extends Equals {
 
 }
 
+object Dealer {
+  def newDeck: Cards = { for { s <- Suit.values; r <- Rank.values  } yield { new Card(r,s) } }
+  def shuffle( d: Cards ): Cards = { scala.util.Random.shuffle( d ) }
+  def deal( d: Cards, n: Int ): Cards = { d.take(n) }
+  def makeHand( cs: Cards ): Hand = { new Hand( cs ) }
+}
+
 object Main {
 
   import Rank._
