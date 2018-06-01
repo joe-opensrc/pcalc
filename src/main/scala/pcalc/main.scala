@@ -88,18 +88,13 @@ class Hand( private var _cs: Cards ) extends Ordered[Hand] {
   def sort: Cards = { this.cards.sorted }
   def sorted: Cards = { this.sort }
 
-  override def canEqual( that: Any ): Boolean = { that.isInstanceOf[Hand] }
   override def equals( that: Any ): Boolean = { 
     that match {
-      case that: Hand => that.canEqual(this) && that.hashCode == this.hashCode 
+      case that: Hand => println("foo:" + this.hashCode); this.cards == that.cards 
       case _ => false
     } 
   } 
 
-  override def hashCode: Int = {
-    println( this.cards.hashCode )
-    this.cards.hashCode
- 
   override def compare( that: Hand ) = {
     /** hand comparison to defined later :O **/
     0
