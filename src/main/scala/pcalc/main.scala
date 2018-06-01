@@ -110,8 +110,35 @@ class Hand( private var _cs: Cards ) extends Ordered[Hand] {
 object Dealer {
   def newDeck: Cards = { for { s <- Suit.values; r <- Rank.values  } yield { new Card(r,s) } }
   def shuffle( d: Cards ): Cards = { scala.util.Random.shuffle( d ) }
-  def deal( d: Cards, n: Int ): Cards = { d.take(n) }
+  def deal( d: Cards, n: Int ): Hand = { this.makeHand( d.take(n) ) }
   def makeHand( cs: Cards ): Hand = { new Hand( cs ) }
+  def ensureMissing( d: Cards, cs: Cards ): Cards = { d.diff( cs ) }
+  def removeFromDeck( d: Cards, a: Any ): Cards = { 
+    a match {
+       case a: Card  => List(a)
+       case a: Hand  => a.cards
+       case _        => List()
+    }
+  }
+}
+
+case class Dealer( val _d: Cards = Dealer.newDeck ) {
+  var deck = _d
+  
+  def reset = { this.deck = Dealer.newDeck }
+  def shuffle = { this.deck = Dealer.shuffle( this.deck ) }
+  def deal( n: Int ): Hand = { val h = Dealer.deal( this.deck, n ); this.deck = this.deck.drop(n); h }
+
+  def ensureMissing( a: Any ) = { 
+    var cards: Cards = a match { 
+                          case a: Cards => a
+                          case a: Card  => List(a)
+                          case a: Hand  => a.cards
+                          case _        => List()
+                        }
+
+      this.deck = Dealer.ensureMissing( this.deck, cards ) 
+  }
 }
 
 object Main {
