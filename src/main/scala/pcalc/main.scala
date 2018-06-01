@@ -72,7 +72,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 }
 
-class Hand( private var _cs: Cards ) {
+class Hand( private var _cs: Cards ) extends Equals {
 
   def cards = _cs
 
@@ -82,6 +82,21 @@ class Hand( private var _cs: Cards ) {
 
   def sort: Cards = { this.cards.sorted }
   def sorted: Cards = { this.sort }
+
+  override def canEqual( that: Any ): Boolean = { that.isInstanceOf[Hand] }
+  override def equals( that: Any ): Boolean = { 
+    that match {
+      case that: Hand => that.canEqual(this) && that.hashCode == this.hashCode 
+      case _ => false
+    } 
+  } 
+
+  override def hashCode: Int = {
+    println( this.cards.hashCode )
+    this.cards.hashCode
+ 
+  }
+ 
   override def toString(): String = {
     "[" + this.cards.mkString("|") + "]" 
   }
