@@ -6,9 +6,6 @@ package object types {
   type Cards = Seq[Card]
 }
 
-  
-
-
 sealed abstract class CardProperty( val c: Char, val v: Int ) extends EnumEntry with Ordered[CardProperty] {
 
   def toChar = c 
