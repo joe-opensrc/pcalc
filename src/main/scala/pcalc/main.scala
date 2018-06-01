@@ -77,7 +77,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 }
 
-class Hand( private var _cs: Cards ) extends Equals {
+class Hand( private var _cs: Cards ) extends Ordered[Hand] {
 
   def cards = _cs
 
@@ -100,8 +100,11 @@ class Hand( private var _cs: Cards ) extends Equals {
     println( this.cards.hashCode )
     this.cards.hashCode
  
+  override def compare( that: Hand ) = {
+    /** hand comparison to defined later :O **/
+    0
   }
- 
+
   override def toString(): String = {
     "[" + this.cards.mkString("|") + "]" 
   }
