@@ -1,5 +1,6 @@
 package pcalc
 import pcalc.types._
+import enumeratum._
 
 package object types {
   type Cards = Seq[Card]
