@@ -128,8 +128,8 @@ object Main {
     val h1 = new Hand( List( c1, c2 ) )
     val h2 = Dealer.makeHand( Dealer.deal( deck, 2 ) )
 
-    println( h1 + "--" + h2 )
-    println( h1 == h2 )
+    println( c1 + "--" + c2 )
+    println( c1 == c2 )
     println(h1.sorted + " " + deck) 
 
   }
