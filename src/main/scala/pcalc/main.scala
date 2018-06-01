@@ -92,12 +92,19 @@ class Hand( private var _cs: Cards ) {
 }
 
 object Main {
+
+  import Rank._
+  import Suit._
+
   def main( args: Array[String] ): Unit = {
+
+    val deck = for { s <- Suit.values; r <- Rank.values  } yield { new Card(r,s) }
+
     val c1 = new Card( Four, Heart )
     val c2 = new Card( Three, Heart )
     val h1 = new Hand( List( c1, c2 ) )
 
-    println(h1.sort) 
+    println(deck) 
 
   }
 }
