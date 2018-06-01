@@ -80,6 +80,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 class Hand( private var _cs: Cards ) extends Ordered[Hand] {
 
   def cards = _cs
+  def cards_= ( cs: Cards ): Cards = { this.cards = cs }
 
   def merge( h: Hand ): Unit = {
     this.cards ++ h.cards
