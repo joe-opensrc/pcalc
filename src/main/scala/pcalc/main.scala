@@ -101,7 +101,7 @@ class Hand( private var _cs: Cards ) extends Ordered[Hand] {
 
   override def equals( that: Any ): Boolean = { 
     that match {
-      case that: Hand => this.cards == that.cards 
+      case that: Hand => this.cards == that.cards
       case _ => false
     } 
   } 
