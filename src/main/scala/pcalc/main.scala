@@ -205,21 +205,21 @@ object Main {
     val dealer = new Dealer()
     dealer.shuffleDeck()
 
-    val c1 = new Card( Six, Heart )
-    val c2 = new Card( Seven, Heart )
+    val c1 = new Card( King, Heart )
+    val c2 = new Card( Ten, Heart )
 
     val h1 = new Hand( List(c1,c2) )
 
-    println( Card.charToRank( 'T' ) )
-
     dealer.ensureRemoved( h1 )
-    println( Card( "A♥" ) )  
 
     val h2 = dealer.deal( 5 ) 
+    h2.sort()
 
-    println( h1 + "--" + h2 )
+    println (  Hand.merge( h1, h2 ).sorted )
+
+    println( h1.sorted + "--" + h2 )
     println( h1 == h2 )
-    println( dealer.deck ) 
+    println( dealer.deck.size ) 
 
   }
 }
