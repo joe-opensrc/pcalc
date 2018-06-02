@@ -170,8 +170,8 @@ object Dealer {
 class Dealer( val _d: Cards = Dealer.newDeck ) {
   var deck = _d
   
-  def reset = { this.deck = Dealer.newDeck }
-  def shuffle = { this.deck = Dealer.shuffle( this.deck ) }
+  def newDeck() = { this.deck = Dealer.newDeck }
+  def shuffleDeck() = { this.deck = Dealer.shuffle( this.deck ) }
   def deal( n: Int ): Hand = { val h = Dealer.deal( this.deck, n ); this.deck = this.deck.drop(n); h }
   def ensureRemoved( a: Any ) = { this.deck = Dealer.ensureRemoved( this.deck, a ) }
 }
