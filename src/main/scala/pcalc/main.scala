@@ -12,7 +12,7 @@ sealed abstract class CardProperty( val c: Char, val v: Int ) extends EnumEntry 
   def value = v
 
   def compare( that: CardProperty ): Int = { this.v - that.v }
-  def  equals( that: CardProperty ): Boolean = { this.equals(that) } 
+  def  equals( that: CardProperty ): Boolean = { this.v == that.v  } 
 
 }
 
