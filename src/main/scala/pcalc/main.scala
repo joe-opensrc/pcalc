@@ -132,7 +132,7 @@ object Dealer {
   }
 }
 
-case class Dealer( val _d: Cards = Dealer.newDeck ) {
+class Dealer( val _d: Cards = Dealer.newDeck ) {
   var deck = _d
   
   def reset = { this.deck = Dealer.newDeck }
