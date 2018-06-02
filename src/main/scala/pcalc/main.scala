@@ -48,7 +48,7 @@ case object Suit extends Enum[Suit] {
   case object Heart   extends Suit( '♥', 100 )
   case object Club    extends Suit( '♣', 100 )
   case object Diamond extends Suit( '♦', 100 )
-  case object Spades  extends Suit( '♠', 100 )
+  case object Spade  extends Suit( '♠', 100 )
 
 }
 
