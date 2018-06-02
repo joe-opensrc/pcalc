@@ -97,21 +97,21 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 }
 
-class Hand( private var _cs: Cards ) extends Ordered[Hand] {
 
-  def cards = _cs
-  def cards_= ( cs: Cards ): Cards = { this.cards = cs }
+class Hand( private var _cards: Cards  ) extends Ordered[Hand] {
+
+  def cards = _cards
 
   def merge( h: Hand ): Unit = {
-    this.cards ++ h.cards
+    this._cards ++ h.cards
   }
 
-  def sort: Cards = { this.cards.sorted }
-  def sorted: Cards = { this.sort }
+  def sort(): Unit = { this._cards = this._cards.sorted }
+  def sorted: Hand = { this.sort(); this }
 
   override def equals( that: Any ): Boolean = { 
     that match {
-      case that: Hand => this.cards == that.cards
+      case that: Hand => this._cards == that.cards
       case _ => false
     } 
   } 
@@ -122,7 +122,7 @@ class Hand( private var _cs: Cards ) extends Ordered[Hand] {
   }
 
   override def toString(): String = {
-    "[" + this.cards.mkString("|") + "]" 
+    "[" + this._cards.mkString("|") + "]" 
   }
 
 }
