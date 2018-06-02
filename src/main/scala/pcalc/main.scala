@@ -144,7 +144,14 @@ object Hand {
  
   }
 
-}
+  def rank( h: Hand ) = {
+    val cs = h.cards
+    val r = cs.groupBy( _.rank )
+    val s = cs.groupBy( _.suit )
+    println( r )
+    println( s )
+  }
+} 
 
 object Dealer {
   def newDeck: Cards = { 
