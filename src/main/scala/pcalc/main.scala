@@ -194,6 +194,7 @@ class Dealer( val _d: Cards = Dealer.newDeck ) {
   def ensureRemoved( a: Any ) = { this.deck = Dealer.ensureRemoved( this.deck, a ) }
 }
 
+
 object Main {
 
   import Rank._
