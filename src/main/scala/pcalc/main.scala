@@ -53,6 +53,17 @@ case object Suit extends Enum[Suit] {
 
 }
 
+object Card {
+ 
+  //def apply( s: String ): Card = {
+  //}
+ 
+  def valueToRank( n: Int ): Option[Rank] = {
+    Rank.values.find( x => x.value == n ) 
+  }
+
+}
+
 class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[Card] {
 
   def rank = _rank
