@@ -219,14 +219,15 @@ object Main {
 
     dealer.ensureRemoved( h1 )
 
-    val h2 = dealer.deal( 5 ) 
+    val h2 = dealer.deal( 7 ) 
     h2.sort()
 
-    println (  Hand.merge( h1, h2 ).sorted )
+    Hand.rank( h2 )
+//    println (  Hand.merge( h1, h2 ).sorted )
 
-    println( h1.sorted + "--" + h2 )
-    println( h1 == h2 )
-    println( dealer.deck.size ) 
+//    println( h1.sorted + "--" + h2 )
+//    println( h1 == h2 )
+//    println( dealer.deck.size ) 
 
   }
 }
