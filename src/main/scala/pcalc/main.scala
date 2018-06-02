@@ -20,7 +20,6 @@ sealed abstract class CardProperty( val c: Char, val v: Int ) extends EnumEntry 
 sealed abstract class Rank( override val c: Char, override val v: Int ) extends CardProperty( c,v ) {}
 sealed abstract class Suit( override val c: Char, override val v: Int ) extends CardProperty( c,v ) {}
 
-
 case object Rank extends Enum[Rank] {
 
   val values = findValues
