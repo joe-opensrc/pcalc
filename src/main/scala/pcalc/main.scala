@@ -127,6 +127,25 @@ class Hand( private var _cards: Cards  ) extends Ordered[Hand] {
 
 }
 
+object Hand {
+
+  def merge( h1: Hand, h2: Hand ): Hand = {
+    val cs = h1.cards ++ h2.cards
+    new Hand( cs )
+  }
+
+
+  def apply( s: String ): Hand = {
+    
+    val hstr = s.split('|')
+    val css = for ( cstr <- hstr) yield {  Card(cstr)  }  
+
+    new Hand( css )
+ 
+  }
+
+}
+
 object Dealer {
   def newDeck: Cards = { 
     for { s <- Suit.values; r <- Rank.values  } yield { new Card(r,s) } 
