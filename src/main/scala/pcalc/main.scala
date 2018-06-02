@@ -171,17 +171,20 @@ object Main {
   import Suit._
 
   def main( args: Array[String] ): Unit = {
-
+println( new Card( Three, Club ) == new Card( Two, Club ) )
 //    val deck = Dealer.shuffle( Dealer.newDeck )
     val dealer = new Dealer()
 
     val c1 = new Card( Two, Heart )
     val c2 = new Card( Three, Heart )
-    val c3 = new Card( Five, Heart )
 
-    val h1 = new Hand( List( c1, c2 ) )
+    val h1 = new Hand( List(c1,c2) )
 
-    dealer.ensureMissing( c3 )
+//    println( Card.valueToRank( A ) 
+
+    //dealer.ensureRemoved( h1 )
+    
+
     val h2 = dealer.deal( 2 ) 
 
     println( h1 + "--" + h2 )
