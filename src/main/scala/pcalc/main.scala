@@ -54,12 +54,23 @@ case object Suit extends Enum[Suit] {
 }
 
 object Card {
- 
-  //def apply( s: String ): Card = {
-  //}
- 
-  def valueToRank( n: Int ): Option[Rank] = {
-    Rank.values.find( x => x.value == n ) 
+
+  /** aka abusing Option.get **/
+  def charToRank( c: Char): Rank = {
+    Rank.values.find( r => r.c == c ).get
+  }
+
+  def charToSuit( c: Char): Suit = {
+    Suit.values.find( s => s.c == c ).get
+  }
+
+  def apply( cstr: String ): Card = {
+
+    val rchar = cstr(0)
+    val schar = cstr(1)
+    
+    new Card ( charToRank( rchar ), charToSuit( schar ) )
+
   }
 
 }
