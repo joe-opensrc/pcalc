@@ -101,8 +101,27 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 }
 
+object Math {
 
-class Hand( private var _cards: Cards  ) extends Ordered[Hand] {
+  def factFold(n: BigInt): BigInt = { 
+    val one: BigInt = 1
+    (one to n).foldLeft(one)( (a,b) => (a*b) )
+  }
+ 
+  def pnk( n: BigInt, k: BigInt ): BigInt = {
+    if ( k > n ) { return 0 } else {
+    return factFold(n) / factFold(n-k) 
+    }
+  }
+
+  def nck( n: BigInt, k: BigInt ): BigInt = {
+   if ( k > n ) { return 0 } else {
+    return pnk(n, k) / factFold(k) 
+   }
+  }
+ 
+}
+
 
   def cards = _cards
 
