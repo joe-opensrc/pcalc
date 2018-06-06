@@ -277,22 +277,16 @@ object Main {
     val dealer = new Dealer()
     dealer.shuffleDeck()
 
-    val c1 = new Card( King, Heart )
-    val c2 = new Card( Ten, Heart )
+    println( Math.nck( 52, 2 ) )
 
-    val h1 = new Hand( List(c1,c2) )
+    val h1 = dealer.deal( 7 ) 
 
-    dealer.ensureRemoved( h1 )
+    Hand.rank( h1 )
 
-    val h2 = dealer.deal( 7 ) 
-    h2.sort()
 
-    Hand.rank( h2 )
-//    println (  Hand.merge( h1, h2 ).sorted )
 
-//    println( h1.sorted + "--" + h2 )
-//    println( h1 == h2 )
-//    println( dealer.deck.size ) 
+//   val foo = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
+//    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
 
   }
 }
