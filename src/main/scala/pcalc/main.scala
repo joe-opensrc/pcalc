@@ -87,8 +87,12 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
   }
 
   override def equals( that: Any ): Boolean = that match {
-    case that: Card => that.isInstanceOf[Card] && this.rank == that.rank && this.suit == that.suit 
+    case that: Card => that.isInstanceOf[Card] && this.hashCode == that.hashCode 
     case _ => false
+  }
+
+  override def hashCode(): Int = {
+    this.rank.value + this.suit.value 
   }
 
   override def toString(): String = {
