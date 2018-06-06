@@ -170,12 +170,52 @@ object Hand {
   }
 
   def rank( h: Hand ) = {
-    val cs = h.cards
-    val r = cs.groupBy( _.rank )
-    val s = cs.groupBy( _.suit )
-    println( r )
-    println( s )
+//    val cs = h.cards.sorted
+    val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
+    println(cs)
+    val ranks = { cs.map( _.rank ).groupBy(identity)  }
+    val suits = { cs.map( _.suit ).groupBy(identity).mapValues(_.size) }
+    val flushed = suits.filter(_._2 >= 5).nonEmpty 
+    val (threes, twos) = ranks.mapValues(_.size).filter(_._2 >= 2).partition( _._2 > 2 ) //.toList.sortWith( _._1 > _._1)
+
+    var lastcard = cs.last
+    val str8_prep = { if ( lastcard.rank == Rank.Ace ){ lastcard +: cs } else { cs } }
+//    val wheel_str8 = css.map( _.hashCode ).sum 
+
+      /** reverse gives left to right scan; means we find highest straight first (more often than not) **/
+      val str8_hands = str8_prep.sliding(5).toList.reverse
+      val str8_check = str8_hands.map( 
+                           _.sliding(2).map{ 
+                              case Seq(x,y) => Rank.valuesToIndex( y.rank ) - Rank.valuesToIndex( x.rank ) }.toList ).map{ 
+                                case List(-12,1,1,1) | List(1,1,1,1) => true
+                                case _ => false 
+                        } 
+
+      /** not strictly idiomatic, but readable **/
+      val lc = str8_check.indexOf( true )
+      val (hrank, str8_val) = str8_hands.lift(lc) match {
+        case Some(x) => 
+          /** if all 5 cards are the same then the groupedBy size is unity **/
+          val flsh = x.map( _.suit ).groupBy(identity).mapValues(_.size).size == 1
+          val hr = flsh match { 
+            case true => "Hand.Rank.StraightFlush"
+            case false => "Hand.Rank.Straight"
+          }
+          (Some(hr), x.last)
+
+        case _ => (None, None)
+
+      }
+
+
+//     println(cs)
+//     println(ranks)
+//     println(suits)
+//     println(flushed)    
+//     println( twos.toList.sortWith( _._1 > _._1 ) )
+//     println( threes.toList.sortWith( _._1 > _._1 ) )
   }
+
 } 
 
 object Dealer {
