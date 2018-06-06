@@ -122,11 +122,12 @@ object Math {
  
 }
 
+class Hand( private var _cards: Cards  ) { //extends Ordered[Hand] {
 
   def cards = _cards
 
   def merge( h: Hand ): Unit = {
-    this._cards ++ h.cards
+    this._cards = this.cards ++ h.cards
   }
 
   def sort(): Unit = { this._cards = this._cards.sorted }
@@ -134,14 +135,15 @@ object Math {
 
   override def equals( that: Any ): Boolean = { 
     that match {
-      case that: Hand => this._cards == that.cards
+      case that: Hand => this.cards.sorted.map( _.rank.value ).sum == that.cards.sorted.map( _.rank.value ).sum
       case _ => false
     } 
   } 
 
-  override def compare( that: Hand ) = {
-    /** hand comparison to defined later :O **/
-    0
+  override def hashCode: Int = {
+    val hc = this.cards.map( x => x.hashCode ).sum
+//    println( "hc: " + hc + " -> " + this.cards ) 
+    hc
   }
 
   override def toString(): String = {
