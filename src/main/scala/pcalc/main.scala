@@ -189,16 +189,17 @@ object Hand {
                                 case _ => false 
                         } 
 
-      /** not strictly idiomatic, but readable **/
+      /** not strictly idiomatic I'm thinking, but slightly more readable **/
       val lc = str8_check.indexOf( true )
       val (hrank, str8_val) = str8_hands.lift(lc) match {
         case Some(x) => 
-          /** if all 5 cards are the same then the groupedBy size is unity **/
+          /** if all 5 suits are the same then the groupedBy size is unity **/
           val flsh = x.map( _.suit ).groupBy(identity).mapValues(_.size).size == 1
           val hr = flsh match { 
             case true => "Hand.Rank.StraightFlush"
             case false => "Hand.Rank.Straight"
           }
+
           (Some(hr), x.last)
 
         case _ => (None, None)
