@@ -169,14 +169,12 @@ object Hand {
  
   }
 
+  /** check for straights -- (Str8Flush, Str8) */
+
   def rank( h: Hand ) = {
 //    val cs = h.cards.sorted
     val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
     println(cs)
-    val ranks = { cs.map( _.rank ).groupBy(identity)  }
-    val suits = { cs.map( _.suit ).groupBy(identity).mapValues(_.size) }
-    val flushed = suits.filter(_._2 >= 5).nonEmpty 
-    val (threes, twos) = ranks.mapValues(_.size).filter(_._2 >= 2).partition( _._2 > 2 ) //.toList.sortWith( _._1 > _._1)
 
     var lastcard = cs.last
     val str8_prep = { if ( lastcard.rank == Rank.Ace ){ lastcard +: cs } else { cs } }
@@ -208,6 +206,10 @@ object Hand {
       }
 
 
+    val ranks = { cs.map( _.rank ).groupBy(identity)  }
+    val suits = { cs.map( _.suit ).groupBy(identity).mapValues(_.size) }
+    val flushed = suits.filter(_._2 >= 5).nonEmpty 
+    val (threes, twos) = ranks.mapValues(_.size).filter(_._2 >= 2).partition( _._2 > 2 ) //.toList.sortWith( _._1 > _._1)
 //     println(cs)
 //     println(ranks)
 //     println(suits)
