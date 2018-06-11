@@ -198,7 +198,12 @@ object Hand {
           /** if all 5 suits are the same then the groupedBy size is unity **/
           val flsh = x.map( _.suit ).groupBy(identity).mapValues(_.size).size == 1
           val hr = flsh match { 
-            case true => "Hand.Rank.StraightFlush"
+            case true => 
+              x.last.rank match {
+                case Rank.Ace => "Hand.Rank.RoyalFlush"
+                case _ => "Hand.Rank.StraightFlush"
+              }
+
             case false => "Hand.Rank.Straight"
           }
 
