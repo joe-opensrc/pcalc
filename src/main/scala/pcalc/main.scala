@@ -195,7 +195,7 @@ object Hand {
       val hc = str8_check.indexOf( true )
       val (hrank, str8_val) = str8_hands.lift(hc) match {
         case Some(x) => 
-          /** if all 5 suits are the same then the groupedBy size is unity **/
+          /** if all 5 suits are the same then the groupedBy size is unity. i.e., 5/5 **/
           val flsh = x.map( _.suit ).groupBy(identity).mapValues(_.size).size == 1
           val hr = flsh match { 
             case true => 
