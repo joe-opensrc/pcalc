@@ -212,18 +212,76 @@ object Hand {
         case _ => (None, None)
 
       }
-
-
+    println(hrank, str8_val)
     val ranks = { cs.map( _.rank ).groupBy(identity)  }
-    val suits = { cs.map( _.suit ).groupBy(identity).mapValues(_.size) }
-    val flushed = suits.filter(_._2 >= 5).nonEmpty 
-    val (threes, twos) = ranks.mapValues(_.size).filter(_._2 >= 2).partition( _._2 > 2 ) //.toList.sortWith( _._1 > _._1)
-//     println(cs)
-//     println(ranks)
+    val flushSuit = { cs.map( _.suit ).groupBy(identity).mapValues(_.size).filter(_._2 >= 5).keys.headOption }
+    val (flushed, fhc) = flushSuit match {
+      case Some( x: Suit ) => ( "Hand.Rank.Flush", highcard )
+      case _ => ( None, None )
+    }
+
+    println( flushed, fhc )
+  //  }
+    //val ( fours, threestwos ) 
+    val settishs  = ranks.mapValues(_.size).filter(_._2 >= 2)
+    val rgrps = settishs.groupBy( _._2 )
+    
+    val bar = rgrps.keys.toList.sorted.reverse match {
+      case x: List[Int] if x.head == 4 => ("FourOfAKind",rgrps.lift(x.head).head.head._1)
+      case x: List[Int] if x.head == 3 => 
+
+        val topthree = rgrps.lift(3).head.toList(0)._1
+        println("topthree: " + topthree )
+        val threes = rgrps.apply( x.head )
+
+        println(threes)
+
+        val nar = threes match {
+          case x if x.size == 1 => 
+            val twos = rgrps.lift(2) 
+            twos match {
+              case Some(x) => ("FullHouse", (topthree, x.head._1) )
+              case _ => (None,None)
+            }
+
+          case x if x.size == 2 => 
+              val lowerthree = threes.tail.head._1
+             ("FullHouse", (topthree, lowerthree))
+          case _      => None
+        }
+
+        println("nar: " + nar )
+        
+
+
+      case x: List[Int] if x.head == 2 => 
+        rgrps.apply(2).size match { 
+          case x: Int if x == 1  => ("Hand.Rank.Pair", x )
+          case x: Int if x > 1  => ("Hand.Rank.TwoPair", rgrps.apply(2).toList.sortWith( _._1 > _._1 ).take(2).map( _._1 ) )
+          case _ => (None,None)
+          
+        }
+
+      case _ => None
+    }
+
+      val nar = bar match { case x => println("FOO: " + x) } 
+      println(nar)
+    println("bar: " + bar )     
+//    val fours = foo.getOrElse(4,None) match {
+//      case x: Rank => ("Hand.Rank.FourOfAKind", x)
+//      case _ => (None,None)
+//    }
+
+//      println("fours: " + fours) 
+     println(cs)
+     println(ranks)
 //     println(suits)
-//     println(flushed)    
+//     println("flush: " + flushed)    
 //     println( twos.toList.sortWith( _._1 > _._1 ) )
 //     println( threes.toList.sortWith( _._1 > _._1 ) )
+//     println( fours.toList.sortWith( _._1 > _._1 ) )
+     println( hrank, str8_val )
   }
 
 } 
