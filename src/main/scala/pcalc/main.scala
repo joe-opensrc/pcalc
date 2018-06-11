@@ -176,8 +176,8 @@ object Hand {
     val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
     println(cs)
 
-    var lastcard = cs.last
-    val str8_prep = { if ( lastcard.rank == Rank.Ace ){ lastcard +: cs } else { cs } }
+    var highcard = cs.last
+    val str8_prep = { if ( highcard.rank == Rank.Ace ){ highcard +: cs } else { cs } }
 //    val wheel_str8 = css.map( _.hashCode ).sum 
 
       /** reverse gives left to right scan; means we find highest straight first (more often than not) **/
