@@ -169,18 +169,20 @@ object Hand {
  
   }
 
-  /** check for straights -- (Str8Flush, Str8) */
+  /** check for straights (Str8Flush, Str8) */
 
   def rank( h: Hand ) = {
 //    val cs = h.cards.sorted
     val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
+                 //♠♣♥♦
     println(cs)
 
     var highcard = cs.last
     val str8_prep = { if ( highcard.rank == Rank.Ace ){ highcard +: cs } else { cs } }
 //    val wheel_str8 = css.map( _.hashCode ).sum 
 
-      /** reverse gives left to right scan; means we find highest straight first (more often than not) **/
+      /** reverse gives left to right scan; means we find highest straight first (more often than not) 
+       ** wheel str8 is on the far right of the map */
       val str8_hands = str8_prep.sliding(5).toList.reverse
       val str8_check = str8_hands.map( 
                            _.sliding(2).map{ 
