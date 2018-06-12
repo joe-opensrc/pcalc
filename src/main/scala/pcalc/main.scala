@@ -242,12 +242,13 @@ object Hand {
             val twos = rgrps.lift(2) 
             twos match {
               case Some(x) => ("FullHouse", (topthree, x.head._1) )
+              case Some(x) => ("Hand.Rank.FullHouse", (topthree, x.head._1) )
               case _ => (None,None)
             }
 
           case x if x.size == 2 => 
               val lowerthree = threes.tail.head._1
-             ("FullHouse", (topthree, lowerthree))
+             ("Hand.Rank.FullHouse", (topthree, lowerthree))
           case _      => None
         }
 
