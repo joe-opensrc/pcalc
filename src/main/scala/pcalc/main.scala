@@ -227,6 +227,7 @@ object Hand {
     val rgrps = settishs.groupBy( _._2 )
     
     val bar = rgrps.keys.toList.sorted.reverse match {
+      case List() => ("Hand.Rank.HighCard", highcard )
       case x: List[Int] if x.head == 4 => ("FourOfAKind",rgrps.lift(x.head).head.head._1)
       case x: List[Int] if x.head == 3 => 
 
