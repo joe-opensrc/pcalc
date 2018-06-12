@@ -175,7 +175,6 @@ object Hand {
 //    val cs = h.cards.sorted
     val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
                  //♠♣♥♦
-    println(cs)
 
     var highcard = cs.last
     val str8_prep = { if ( highcard.rank == Rank.Ace ){ highcard +: cs } else { cs } }
@@ -212,7 +211,6 @@ object Hand {
         case _ => (None, None)
 
       }
-    println(hrank, str8_val)
     val ranks = { cs.map( _.rank ).groupBy(identity)  }
     val flushSuit = { cs.map( _.suit ).groupBy(identity).mapValues(_.size).filter(_._2 >= 5).keys.headOption }
     val (flushed, fhc) = flushSuit match {
@@ -220,7 +218,6 @@ object Hand {
       case _ => ( None, None )
     }
 
-    println( flushed, fhc )
   //  }
     //val ( fours, threestwos ) 
     val settishs  = ranks.mapValues(_.size).filter(_._2 >= 2)
@@ -232,10 +229,8 @@ object Hand {
       case x: List[Int] if x.head == 3 => 
 
         val topthree = rgrps.lift(3).head.toList(0)._1
-        println("topthree: " + topthree )
         val threes = rgrps.apply( x.head )
 
-        println(threes)
 
         val nar = threes match {
           case x if x.size == 1 => 
@@ -251,7 +246,6 @@ object Hand {
           case _      => None
         }
 
-        println("nar: " + nar )
         
 
 
@@ -266,23 +260,6 @@ object Hand {
       case _ => None
     }
 
-      val nar = bar match { case x => println("FOO: " + x) } 
-      println(nar)
-    println("bar: " + bar )     
-//    val fours = foo.getOrElse(4,None) match {
-//      case x: Rank => ("Hand.Rank.FourOfAKind", x)
-//      case _ => (None,None)
-//    }
-
-//      println("fours: " + fours) 
-     println(cs)
-     println(ranks)
-//     println(suits)
-//     println("flush: " + flushed)    
-//     println( twos.toList.sortWith( _._1 > _._1 ) )
-//     println( threes.toList.sortWith( _._1 > _._1 ) )
-//     println( fours.toList.sortWith( _._1 > _._1 ) )
-     println( hrank, str8_val )
   }
 
 } 
