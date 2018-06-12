@@ -169,7 +169,28 @@ object Hand {
  
   }
 
-  /** check for straights (Str8Flush, Str8) */
+  /** check for straights: 
+        return Hand.Rank.RoyalFlush, 
+        return Hand.Rank.StraightFlush, 
+
+        Hand.Rank.Straight 
+
+        if Hand.Rank.Straight or None
+          check for: 
+            return Hand.Rank.FourOfAKind
+            return Hand.Rank.FullHouse
+            Hand.Rank.TwoPair
+            Hand.Rank.Pair
+
+            check for:
+              return Hand.Rank.Flush
+  
+            if None:  
+              return Hand.Rank.{TwoPair,Pair,HighCard}
+         
+        
+
+  */
 
   def rank( h: Hand ) = {
 //    val cs = h.cards.sorted
