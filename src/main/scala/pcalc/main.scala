@@ -241,8 +241,7 @@ object Hand {
           case x if x.size == 1 => 
             val twos = rgrps.lift(2) 
             twos match {
-              case Some(x) => ("FullHouse", (topthree, x.head._1) )
-              case Some(x) => ("Hand.Rank.FullHouse", (topthree, x.head._1) )
+              case Some(x) => ("Hand.Rank.FullHouse", (topthree,  x.keys.toSeq.maxBy( _.value ) ) )
               case _ => (None,None)
             }
 
