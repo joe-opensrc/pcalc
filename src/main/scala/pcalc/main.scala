@@ -228,7 +228,7 @@ object Hand {
     
     val bar = rgrps.keys.toList.sorted.reverse match {
       case List() => ("Hand.Rank.HighCard", highcard )
-      case x: List[Int] if x.head == 4 => ("FourOfAKind",rgrps.lift(x.head).head.head._1)
+      case x: List[Int] if x.head == 4 => ("Hand.Rank.FourOfAKind",rgrps.lift(x.head).head.head._1)
       case x: List[Int] if x.head == 3 => 
 
         val topthree = rgrps.lift(3).head.toList(0)._1
