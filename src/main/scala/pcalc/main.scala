@@ -257,7 +257,7 @@ object Hand {
 
       case x: List[Int] if x.head == 2 => 
         rgrps.apply(2).size match { 
-          case x: Int if x == 1  => ("Hand.Rank.Pair", x )
+          case x: Int if x == 1  => ("Hand.Rank.Pair", rgrps.apply(2).toList(0)._1 )
           case x: Int if x > 1  => ("Hand.Rank.TwoPair", rgrps.apply(2).toList.sortWith( _._1 > _._1 ).take(2).map( _._1 ) )
           case _ => (None,None)
           
