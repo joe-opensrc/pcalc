@@ -11,7 +11,7 @@ sealed abstract class CardProperty( val c: Char, val v: Int ) extends EnumEntry 
   def toChar = c 
   def value = v
 
-  def compare( that: CardProperty ): Int = { this.v - that.v }
+  override def compare( that: CardProperty ): Int = { this.v - that.v }
   def  equals( that: CardProperty ): Boolean = { this.v == that.v  } 
 
 }
@@ -103,6 +103,7 @@ class Card( private var _rank: Rank, private var _suit: Suit ) extends Ordered[C
 
 object Math {
 
+  
   def factFold(n: BigInt): BigInt = { 
     val one: BigInt = 1
     (one to n).foldLeft(one)( (a,b) => (a*b) )
@@ -154,6 +155,8 @@ class Hand( private var _cards: Cards  ) { //extends Ordered[Hand] {
 
 object Hand {
 
+  val HANDSIZE = 5
+
   def merge( h1: Hand, h2: Hand ): Hand = {
     val cs = h1.cards ++ h2.cards
     new Hand( cs )
@@ -192,25 +195,116 @@ object Hand {
 
   */
 
+  def cardsAreSequential( cs: Cards ) = {
+  
+
+println("cs: " + cs.sorted.reverse )
+
+    cs.sorted.reverse.sliding(2).map{ 
+      case Seq(x,y) => Rank.valuesToIndex( x.rank ) - Rank.valuesToIndex( y.rank )
+    }.toList match {
+      case List(-12,1,1,1) | List(1,1,1,1) => true
+      case _ => false
+    }
+
+  }
+
+  def areFlushed( cs: Cards ): Boolean = {
+    cs.tail.count( _.suit == cs.head.suit ) == cs.length - 1
+  }
+
+  def genStr8s( cs: Cards ): List[Cards] = {
+    
+    val rankMap = cs.sorted.reverse.groupBy( _.rank )
+
+    // ranksOne -- cards for which there is only possibility
+    val ranksOne = rankMap.filter( _._2.size == 1 ).values.flatten.toList
+    // ranksMany -- cards which have duplicate rank
+    val ranksMany = rankMap.filter( _._2.size > 1 )
+
+    // ranksManyCount -- how many Duplicate card groups?
+    val ranksManyCount = ranksMany.keys.size
+
+    // one set of two, two sets of two, or one set of three, but no more
+    // nope! FourOfAKind == 2-Twos => canBeStr8! doh!
+    val totalDupedCards = ranksMany.values.flatten.size 
+
+    val canBeStr8 = (ranksManyCount, totalDupedCards) match {
+      case (1,2) | (2,4) | (1,3) => true
+      case _ => false
+    }
+
+    println("rankMap: " + rankMap)
+    println("ranksOne: " + ranksOne)
+    // wired duplicates sneeking back in
+    println("ranksMany: " + ranksMany ) //.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList ) 
+    println("ranksManyCount: " + ranksManyCount ) 
+    println("canBeStr8: " + canBeStr8 )
+
+    val str8s = canBeStr8 match {
+
+      case true =>
+
+        if( ranksManyCount == 1 ){
+          ranksMany.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList 
+        }else{
+          if( ranksManyCount == 2 ){
+            ranksMany.values.flatten.toList.combinations(2).filter{ 
+                  case List(x,y) if x.rank != y.rank => true; 
+                  case _                             => false }.map( _.union(ranksOne).sorted ).collect{ case x if cardsAreSequential(x) => x }.toList
+          }else{ 
+            List()
+          }
+        }
+      
+
+      case false =>
+        List()
+
+     }
+
+
+  return str8s
+
+} 
+
+                 //♠ ♣ ♥ ♦
+  def rank2( h: Hand ) = {
+    val cs = Hand("9♥|9♦|T♦|T♣|J♠|Q♦|K♠").cards
+//    val cs = Hand("8♦|9♠|T♦|T♣|J♣|Q♣|K♣").cards
+
+//    println(cs)
+    val str8s = genStr8s( cs )
+//    println("str8s: " + str8s )
+    cs.sorted.reverse.sliding(5).collect{ case x if cardsAreSequential(x) => x }.toList.partition( areFlushed(_) ) match {
+      case x => println(x)
+      case (List(),y) => ("Straight", y.head)
+      case (x,_) => 
+        x.head.head.rank match {
+          case Rank.Ace => ("Royal", x.head )
+          case _ => ("StraightFlush", x.head )
+        }
+ 
+    }
+
+  }
+
   def rank( h: Hand ) = {
 //    val cs = h.cards.sorted
-    val cs = Hand("2♣|3♣|4♣|5♣|6♣|Q♣|A♣").cards
+    val cs = Hand("9♠|9♣|T♠|T♣|J♣|Q♣|K♣").cards.reverse
                  //♠♣♥♦
 
-    var highcard = cs.last
+    var highcard = cs.head
+
     val str8_prep = { if ( highcard.rank == Rank.Ace ){ highcard +: cs } else { cs } }
 //    val wheel_str8 = css.map( _.hashCode ).sum 
 
       /** reverse gives left to right scan; means we find highest straight first (more often than not) 
        ** wheel str8 is on the far right of the map */
       val str8_hands = str8_prep.sliding(5).toList.reverse
-      val str8_check = str8_hands.map( 
-                           _.sliding(2).map{ 
-                              case Seq(x,y) => Rank.valuesToIndex( y.rank ) - Rank.valuesToIndex( x.rank ) }.toList ).map{ 
-                                case List(-12,1,1,1) | List(1,1,1,1) => true
-                                case _ => false 
-                        } 
+      val str8_check = str8_hands.map( cardsAreSequential( _ )  )
 
+      println("str8_check: " + str8_check )
       /** not strictly idiomatic I'm thinking, but slightly more readable **/
       val hc = str8_check.indexOf( true )
       val (hrank, str8_val) = str8_hands.lift(hc) match {
@@ -219,7 +313,7 @@ object Hand {
           val flsh = x.map( _.suit ).groupBy(identity).mapValues(_.size).size == 1
           val hr = flsh match { 
             case true => 
-              x.last.rank match {
+              x.head.rank match {
                 case Rank.Ace => "Hand.Rank.RoyalFlush"
                 case _ => "Hand.Rank.StraightFlush"
               }
@@ -227,11 +321,12 @@ object Hand {
             case false => "Hand.Rank.Straight"
           }
 
-          (Some(hr), x.last)
+          (hr, x.head)
 
         case _ => (None, None)
 
-      }
+      } 
+      println( hrank, str8_val )
     val ranks = { cs.map( _.rank ).groupBy(identity)  }
     val flushSuit = { cs.map( _.suit ).groupBy(identity).mapValues(_.size).filter(_._2 >= 5).keys.headOption }
     val (flushed, fhc) = flushSuit match {
@@ -348,11 +443,10 @@ object Main {
 
     val h1 = dealer.deal( 7 ) 
 
-    Hand.rank( h1 )
+println(    Hand.rank2( h1 ) )
 
 
-
-//   val foo = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
+//   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
 //    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
 
   }
