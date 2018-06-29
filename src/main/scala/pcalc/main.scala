@@ -277,8 +277,26 @@ println("cs: " + cs.sorted.reverse )
                  //♠ ♣ ♥ ♦
   def rank2( h: Hand ): (String,Cards) = {
 //    val cs = Hand("8♥|9♦|T♦|J♣|Q♠|K♦|A♠").cards
-    val cs = Hand("8♦|8♣|8♦|T♦|T♣|T♦|T♦").cards
+    val cs = Hand("8♦|8♣|8♦|T♦|T♣|J♦|J♦").cards
 
+    import scala.collection.immutable.ListMap
+    val sets = ListMap(cs.groupBy( _.rank ).filter( _._2.size >= 2 ).toSeq.sortWith( _._1 < _._1 ):_*).groupBy( _._2.size )
+    
+
+    val foo = sets match {
+      case x => x.keys.toList.sorted match {
+        case y if y == List(2) => sets.get(2) match {
+          case z => z
+        }
+        case List(2,3) => true
+        case List(3,4) => List(3,4)
+      }
+  
+    }
+
+    println("sets: " + sets + "\n")
+    println("sets.stuff: " + sets.map( _._2 ).map( _.toList ).flatten.map( _._2 ).flatten + "\n")
+    println("foo: " + foo )
 
     val highcard = cs.sorted.last
 
