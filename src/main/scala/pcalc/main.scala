@@ -230,7 +230,7 @@ println("cs: " + cs.sorted.reverse )
     val totalDupedCards = ranksMany.values.flatten.size 
 
     val canBeStr8 = (ranksManyCount, totalDupedCards) match {
-      case (1,2) | (2,4) | (1,3) => true
+      case (1,2) | (2,4) | (1,3) | (0,0) => true
       case _ => false
     }
 
@@ -245,6 +245,10 @@ println("cs: " + cs.sorted.reverse )
 
       case true =>
 
+        if( ranksManyCount == 0 ){
+          cs.sorted.sliding(5).collect{ case x if cardsAreSequential(x) => x }.toList
+        }else{
+
         if( ranksManyCount == 1 ){
           ranksMany.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList 
         }else{
@@ -256,6 +260,8 @@ println("cs: " + cs.sorted.reverse )
             List()
           }
         }
+
+      }
       
 
       case false =>
@@ -269,23 +275,77 @@ println("cs: " + cs.sorted.reverse )
 } 
 
                  //♠ ♣ ♥ ♦
-  def rank2( h: Hand ) = {
-    val cs = Hand("9♥|9♦|T♦|T♣|J♠|Q♦|K♠").cards
-//    val cs = Hand("8♦|9♠|T♦|T♣|J♣|Q♣|K♣").cards
+  def rank2( h: Hand ): (String,Cards) = {
+//    val cs = Hand("8♥|9♦|T♦|J♣|Q♠|K♦|A♠").cards
+    val cs = Hand("8♦|8♣|8♦|T♦|T♣|T♦|T♦").cards
 
-//    println(cs)
-    val str8s = genStr8s( cs )
-//    println("str8s: " + str8s )
-    cs.sorted.reverse.sliding(5).collect{ case x if cardsAreSequential(x) => x }.toList.partition( areFlushed(_) ) match {
-      case x => println(x)
-      case (List(),y) => ("Straight", y.head)
-      case (x,_) => 
-        x.head.head.rank match {
-          case Rank.Ace => ("Royal", x.head )
-          case _ => ("StraightFlush", x.head )
+
+    val highcard = cs.sorted.last
+
+    val str8s = genStr8s( cs ).partition( areFlushed(_) ) 
+//    println("spart: " + str8s._2.last.last )
+
+    var chand = str8s match {
+      case (List(),List()) => ("Unknown", List())
+      case (List(),x) => ("Straight", x.last)
+      case (x,_) =>
+        x.last.last.rank match {
+          case Rank.Ace => return ("RoyalFlush", x.last.toList )
+          case _ => return ("StraightFlush", x.last )
         }
- 
+
     }
+
+    chand = cs.groupBy( _.rank ).filter( _._2.size == 4 ).values.flatten match {
+      case List() => ("Unknown", List())
+      case x => return ("FourOfAKind", x.toList )
+    }
+/* 
+    val ranks = { cs.map( _.rank ).groupBy(identity)  }
+    
+    //val ( fours, threestwos ) 
+    val settishs  = ranks.mapValues(_.size).filter(_._2 >= 2)
+    val rgrps = settishs.groupBy( _._2 )
+    
+    chand = rgrps.keys.toList.sorted.reverse match {
+      case List() => ("Hand.Rank.HighCard", cs.sorted.takeRight(5) )
+      case x: List[Int] if x.head == 4 => ("Hand.Rank.FourOfAKind",rgrps.lift(x.head).head.head._1)
+      case x: List[Int] if x.head == 3 => 
+
+        val topthree = rgrps.lift(3).head.toList(0)._1
+        val threes = rgrps.apply( x.head )
+
+
+        val nar = threes match {
+          case x if x.size == 1 => 
+            val twos = rgrps.lift(2) 
+            twos match {
+              case Some(x) => ("Hand.Rank.FullHouse", (topthree,  x.keys.toSeq.maxBy( _.value ) ) )
+              case _ => (None,None)
+            }
+
+          case x if x.size == 2 => 
+              val lowerthree = threes.tail.head._1
+             ("Hand.Rank.FullHouse", (topthree, lowerthree))
+          case _      => None
+        }
+
+        
+
+
+      case x: List[Int] if x.head == 2 => 
+        rgrps.apply(2).size match { 
+          case x: Int if x == 1  => ("Hand.Rank.Pair", rgrps.apply(2).toList(0)._1 )
+          case x: Int if x > 1  => ("Hand.Rank.TwoPair", rgrps.apply(2).toList.sortWith( _._1 > _._1 ).take(2).map( _._1 ) )
+          case _ => (None,None)
+          
+        }
+
+      case _ => None
+    }
+
+*/
+    ("Unkown", List() )
 
   }
 
