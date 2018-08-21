@@ -2,6 +2,7 @@ package pcalc
 import pcalc.types._
 import enumeratum.{ Enum, EnumEntry }
 import enumeratum.values.{ IntEnum, IntEnumEntry }
+import io.getquill._
 
 package object types {
   type Cards = Seq[Card]
@@ -517,6 +518,24 @@ object Main {
   import Suit._
   import HandRank._
 
+    import io.getquill._
+    lazy val ctx = new CassandraMirrorContext(Literal)
+    import ctx._
+
+    case class HoldemRounds( round_id: Int, stage: Int, p1: Int, p2: Int, p3: Int, p4: Int, p5: Int, p6: Int )
+//  case class HoldemRounds( val hrt: (Int, Int, List[HandRank]) ) extends Product with Serializable 
+
+  val foo = quote {
+    querySchema[HoldemRounds]("holdem_rounds", round_id -> "round_id" )
+    
+  }
+
+  def insrt( hrt: List[HoldemRounds] ) = quote {
+
+//    querySchema[HoldemRounds]("holdem_rounds", _.1 -> "round_id", _.2 -> "stage", _.3.(0) -> "p1" ), 
+    liftQuery( hrt ).foreach( r => query[HoldemRounds].insert( r ) )
+  }
+
   def main( args: Array[String] ): Unit = {
 
     val itn = args.lift(0).getOrElse("10").toInt
@@ -547,21 +566,47 @@ object Main {
 
 //      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
 
-println(    Hand.rank2( h1 ) )
+var rounds = List( new HoldemRounds( (i,1,ps.map( _.sorted ).map( Hand.rank2( _ ) ).map( _._1 ).toList ) ) ) 
+
+    
+    rounds = rounds :+ new HoldemRounds( ( i,2,ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 ).toList ) ) 
+    
 
       val t = dealer.deal(1)
       h.merge(t)
 //      println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
 
+
+      rounds = rounds :+ new HoldemRounds( (i,3,ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 ).toList) )
+
       val r = dealer.deal(1)
       h.merge(r)
 //      println("River: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
 
+      rounds = rounds :+ new HoldemRounds( (i,4,ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 ).toList) )
+
+      
+//      val ins = quote { liftQuery(rounds).foreach{ r => val p1,p2,p3,p4,p5,p6 = r; new HoldemRounds(1,1,p1.value,p2,p3,p4,p5,p6) } }
+//      val ins = quote { liftQuery( rounds ).foreach( r => query[HoldemRounds].insert( r ) ) }
+
+//      val ins = quote {  }
+      ctx.run( insrt( rounds ))
+
       dealer.newDeck() 
+      println("rounds: " + rounds)
     }
 
 //   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
 //    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
+//import io.getquill._
+//    val ctx = new CassandraSyncContext(Literal)
+//    lazy val ctx = new CassandraSyncContext(SnakeCase, "ctx")
+//    import ctx._
+//    val ins = quote { query[HoldemRounds].insert( lift( new HoldemRounds( 1,1,1,2,4,8,16,32 ) ) ) } 
+//    println( ctx.run(ins))
+
+//    val foo = quote { query[HoldemRounds] }
+//  println( ctx.run(foo))
 
   }
 }
