@@ -1,6 +1,7 @@
 package pcalc
 import pcalc.types._
-import enumeratum._
+import enumeratum.{ Enum, EnumEntry }
+import enumeratum.values.{ IntEnum, IntEnumEntry }
 
 package object types {
   type Cards = Seq[Card]
@@ -50,6 +51,29 @@ case object Suit extends Enum[Suit] {
   case object Diamond extends Suit( '♦', 65536 )
   case object Spade   extends Suit( '♠', 131072 )
 
+}
+
+sealed abstract class HandRank( val value: Int ) extends IntEnumEntry with Ordered[HandRank] with Product with Serializable {
+  override def compare( that: HandRank ) = { this.value - that.value }
+  def equals (that: HandRank ) = { this.value == that.value }
+}
+
+object HandRank extends IntEnum[HandRank] {
+
+  val values = findValues
+
+  case object Unknown       extends HandRank(0)
+  case object HCard      extends HandRank(1)
+  case object Pair          extends HandRank(2)
+  case object TwoPair       extends HandRank(3)
+  case object ThreeOfAKind  extends HandRank(4)
+  case object Straight      extends HandRank(5)
+  case object Flush         extends HandRank(6)
+  case object FullHouse     extends HandRank(7)
+  case object FourOfAKind   extends HandRank(8)
+  case object StraightFlush extends HandRank(9)
+  case object RoyalFlush    extends HandRank(10)
+ 
 }
 
 object Card {
@@ -125,7 +149,7 @@ object Math {
 
 class Hand( private var _cards: Cards  ) { //extends Ordered[Hand] {
 
-  def cards = _cards
+  def cards = _cards.toList
 
   def merge( h: Hand ): Unit = {
     this._cards = this.cards ++ h.cards
@@ -196,12 +220,8 @@ object Hand {
   */
 
   def cardsAreSequential( cs: Cards ) = {
-  
-
-println("cs: " + cs.sorted.reverse )
-
-    cs.sorted.reverse.sliding(2).map{ 
-      case Seq(x,y) => Rank.valuesToIndex( x.rank ) - Rank.valuesToIndex( y.rank )
+    cs.sliding(2).map{ 
+      case Seq(x,y) => Rank.valuesToIndex( y.rank ) - Rank.valuesToIndex( x.rank )
     }.toList match {
       case List(-12,1,1,1) | List(1,1,1,1) => true
       case _ => false
@@ -214,7 +234,9 @@ println("cs: " + cs.sorted.reverse )
   }
 
   def genStr8s( cs: Cards ): List[Cards] = {
-    
+   
+    if( cs.length < 5 ) { return List() } 
+ 
     val rankMap = cs.sorted.reverse.groupBy( _.rank )
 
     // ranksOne -- cards for which there is only possibility
@@ -225,28 +247,31 @@ println("cs: " + cs.sorted.reverse )
     // ranksManyCount -- how many Duplicate card groups?
     val ranksManyCount = ranksMany.keys.size
 
-    // one set of two, two sets of two, or one set of three, but no more
-    // nope! FourOfAKind == 2-Twos => canBeStr8! doh!
     val totalDupedCards = ranksMany.values.flatten.size 
 
+    // no dupes, one set of two, two sets of two, or one set of three, but no more
     val canBeStr8 = (ranksManyCount, totalDupedCards) match {
       case (1,2) | (2,4) | (1,3) | (0,0) => true
       case _ => false
     }
 
-    println("rankMap: " + rankMap)
-    println("ranksOne: " + ranksOne)
+    //println("rankMap: " + rankMap)
+    //println("ranksOne: " + ranksOne)
     // wired duplicates sneeking back in
-    println("ranksMany: " + ranksMany ) //.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList ) 
-    println("ranksManyCount: " + ranksManyCount ) 
-    println("canBeStr8: " + canBeStr8 )
+    //println("ranksMany: " + ranksMany ) //.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList ) 
+    //println("ranksManyCount: " + ranksManyCount ) 
+    //println("canBeStr8: " + canBeStr8 )
 
     val str8s = canBeStr8 match {
 
       case true =>
 
         if( ranksManyCount == 0 ){
-          cs.sorted.sliding(5).collect{ case x if cardsAreSequential(x) => x }.toList
+          val css = cs.last match {
+            case x if x.rank == Rank.Ace => x +: cs 
+            case _ => cs
+          } 
+          css.sliding(5).collect{ case x if cardsAreSequential(x) => x }.toList
         }else{
 
         if( ranksManyCount == 1 ){
@@ -270,100 +295,80 @@ println("cs: " + cs.sorted.reverse )
      }
 
 
+  //println("str8s: " + str8s)
   return str8s
 
 } 
 
+  def isUnknown( hr: (String,Any) ): Boolean = {
+    return hr._1 == "Unknown"
+  }
+
+  def getHighest( h1: (HandRank, Cards), h2: (HandRank, Cards) ): (HandRank, Cards) = {
+    return if( h1._1 > h2._1 ) h1 else h2
+    
+  }
                  //♠ ♣ ♥ ♦
-  def rank2( h: Hand ): (String,Cards) = {
+  def rank2( h: Hand ): (HandRank,Cards) = {
 //    val cs = Hand("8♥|9♦|T♦|J♣|Q♠|K♦|A♠").cards
-    val cs = Hand("8♦|8♣|8♦|T♦|T♣|J♦|J♦").cards
+//    val cs = Hand("2♣|3♠|6♠|6♦|9♠|T♦|T♦").cards
+
+    val cs = h.cards
 
     import scala.collection.immutable.ListMap
-    val sets = ListMap(cs.groupBy( _.rank ).filter( _._2.size >= 2 ).toSeq.sortWith( _._1 < _._1 ):_*).groupBy( _._2.size )
-    
-
-    val foo = sets match {
-      case x => x.keys.toList.sorted match {
-        case y if y == List(2) => sets.get(2) match {
-          case z => z
-        }
-        case List(2,3) => true
-        case List(3,4) => List(3,4)
-      }
-  
-    }
-
-    println("sets: " + sets + "\n")
-    println("sets.stuff: " + sets.map( _._2 ).map( _.toList ).flatten.map( _._2 ).flatten + "\n")
-    println("foo: " + foo )
-
-    val highcard = cs.sorted.last
+    import HandRank._
 
     val str8s = genStr8s( cs ).partition( areFlushed(_) ) 
-//    println("spart: " + str8s._2.last.last )
 
-    var chand = str8s match {
-      case (List(),List()) => ("Unknown", List())
-      case (List(),x) => ("Straight", x.last)
+    var resHand = str8s match {
+      case (List(),List()) => (Unknown, List())
+      case (List(),x) => (Straight, x.last)
       case (x,_) =>
         x.last.last.rank match {
-          case Rank.Ace => return ("RoyalFlush", x.last.toList )
-          case _ => return ("StraightFlush", x.last )
+          case Rank.Ace => (RoyalFlush, x.last.toList )
+          case _ => (StraightFlush, x.last )
         }
 
     }
 
-    chand = cs.groupBy( _.rank ).filter( _._2.size == 4 ).values.flatten match {
-      case List() => ("Unknown", List())
-      case x => return ("FourOfAKind", x.toList )
-    }
-/* 
-    val ranks = { cs.map( _.rank ).groupBy(identity)  }
-    
-    //val ( fours, threestwos ) 
-    val settishs  = ranks.mapValues(_.size).filter(_._2 >= 2)
-    val rgrps = settishs.groupBy( _._2 )
-    
-    chand = rgrps.keys.toList.sorted.reverse match {
-      case List() => ("Hand.Rank.HighCard", cs.sorted.takeRight(5) )
-      case x: List[Int] if x.head == 4 => ("Hand.Rank.FourOfAKind",rgrps.lift(x.head).head.head._1)
-      case x: List[Int] if x.head == 3 => 
+    if ( resHand._1 <= Straight ){
 
-        val topthree = rgrps.lift(3).head.toList(0)._1
-        val threes = rgrps.apply( x.head )
+      //println("resHanded: " + resHand)
+      val sets = ListMap(cs.groupBy( _.rank ).filter( _._2.size >= 2 ).groupBy( _._2.size ).toSeq.sortWith( _._1 < _._1 ):_*)
+   
+      val sets_flat = sets.map( _._2 ).map( _.toSeq.sortWith( _._1 < _._1 ).flatMap( _._2 ) ).flatten.toList
 
+      resHand = sets.keys.toList.sorted match {
 
-        val nar = threes match {
-          case x if x.size == 1 => 
-            val twos = rgrps.lift(2) 
-            twos match {
-              case Some(x) => ("Hand.Rank.FullHouse", (topthree,  x.keys.toSeq.maxBy( _.value ) ) )
-              case _ => (None,None)
-            }
+        case List()    => getHighest( ( HCard, cs.takeRight(5).sorted ), resHand )  
+        case List(4) | List(_,4)  => (FourOfAKind, sets_flat.takeRight(4))
+        case List(2) => 
+          val twos = sets_flat.takeRight(4) 
+          twos.size match {
+            case 2 => getHighest( resHand, ( Pair, Dealer.ensureRemoved( cs, twos ).takeRight(3) ++ twos ) )
+            case 4 | 6 => getHighest( resHand, ( TwoPair, Dealer.ensureRemoved( cs, twos ).takeRight(1) ++ twos ) ) //getHighest( resHand, (TwoPair, twos) ) // or a str8
+//            case 6 => getHighest( resHand, ( TwoPair, Dealer.ensureRemoved( cs, twos.takeRight(4)).takeRight(1) ++ twos.takeRight(4)  ) ) // 6 cards are the same, can't be a str8
+         }
 
-          case x if x.size == 2 => 
-              val lowerthree = threes.tail.head._1
-             ("Hand.Rank.FullHouse", (topthree, lowerthree))
-          case _      => None
-        }
+        case List(2,3) | List(3) => 
+          val threes = sets_flat.takeRight(5)
+          threes.size match {
+            case 3 => getHighest( resHand, ( ThreeOfAKind, Dealer.ensureRemoved( cs, threes ).takeRight(2) ++ threes ) )
+            case 5 => (FullHouse, threes )
+         }
+       
+      }
 
-        
-
-
-      case x: List[Int] if x.head == 2 => 
-        rgrps.apply(2).size match { 
-          case x: Int if x == 1  => ("Hand.Rank.Pair", rgrps.apply(2).toList(0)._1 )
-          case x: Int if x > 1  => ("Hand.Rank.TwoPair", rgrps.apply(2).toList.sortWith( _._1 > _._1 ).take(2).map( _._1 ) )
-          case _ => (None,None)
-          
-        }
-
-      case _ => None
     }
 
-*/
-    ("Unkown", List() )
+    if( resHand._1 < FullHouse ){
+      resHand = cs.groupBy( _.suit ).filter( _._2.size == 5 ).map( _._2 ).flatten match {
+        case List() => resHand
+        case x => ( Flush, x.toList.sorted )
+      }
+    }
+
+    resHand
 
   }
 
@@ -382,7 +387,7 @@ println("cs: " + cs.sorted.reverse )
       val str8_hands = str8_prep.sliding(5).toList.reverse
       val str8_check = str8_hands.map( cardsAreSequential( _ )  )
 
-      println("str8_check: " + str8_check )
+      //println("str8_check: " + str8_check )
       /** not strictly idiomatic I'm thinking, but slightly more readable **/
       val hc = str8_check.indexOf( true )
       val (hrank, str8_val) = str8_hands.lift(hc) match {
@@ -404,7 +409,7 @@ println("cs: " + cs.sorted.reverse )
         case _ => (None, None)
 
       } 
-      println( hrank, str8_val )
+      //println( hrank, str8_val )
     val ranks = { cs.map( _.rank ).groupBy(identity)  }
     val flushSuit = { cs.map( _.suit ).groupBy(identity).mapValues(_.size).filter(_._2 >= 5).keys.headOption }
     val (flushed, fhc) = flushSuit match {
@@ -418,7 +423,7 @@ println("cs: " + cs.sorted.reverse )
     val rgrps = settishs.groupBy( _._2 )
     
     val bar = rgrps.keys.toList.sorted.reverse match {
-      case List() => ("Hand.Rank.HighCard", highcard )
+      case List() => ("Hand.Rank.HCard", highcard )
       case x: List[Int] if x.head == 4 => ("Hand.Rank.FourOfAKind",rgrps.lift(x.head).head.head._1)
       case x: List[Int] if x.head == 3 => 
 
@@ -511,18 +516,50 @@ object Main {
 
   import Rank._
   import Suit._
+  import HandRank._
 
   def main( args: Array[String] ): Unit = {
 
+    val itn = args.lift(0).getOrElse("10").toInt
+    println( itn )
+
     val dealer = new Dealer()
-    dealer.shuffleDeck()
+    var h: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
+    val num_players = 6
+    
 
-    println( Math.nck( 52, 2 ) )
 
-    val h1 = dealer.deal( 7 ) 
+    for ( i <- 1 to itn ) { //33784560 ){
+
+      dealer.shuffleDeck()
+
+//    println( Math.nck( 52, 2 ) )
+
+
+      val ps = for ( i <- 1 to num_players ) yield {
+        val h = dealer.deal(2) 
+        dealer.ensureRemoved( h )
+        h
+      }           
+
+      h = dealer.deal( 3 )
+      dealer.ensureRemoved( h.cards )
+//      printf("%s -> %s\n", h.sorted, Hand.rank2( h ) )
+
+//      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
 
 println(    Hand.rank2( h1 ) )
 
+      val t = dealer.deal(1)
+      h.merge(t)
+//      println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
+
+      val r = dealer.deal(1)
+      h.merge(r)
+//      println("River: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+
+      dealer.newDeck() 
+    }
 
 //   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
 //    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
