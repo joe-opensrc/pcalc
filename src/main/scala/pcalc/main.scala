@@ -213,7 +213,7 @@ object Hand {
               return Hand.Rank.Flush
   
             if None:  
-              return Hand.Rank.{TwoPair,Pair,HighCard}
+              return Hand.Rank.{TwoPair,Pair,HCard}
          
         
 
@@ -328,7 +328,6 @@ object Hand {
           case Rank.Ace => (RoyalFlush, x.last.toList )
           case _ => (StraightFlush, x.last )
         }
-
     }
 
     if ( resHand._1 <= Straight ){
