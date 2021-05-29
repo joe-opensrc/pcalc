@@ -63,7 +63,7 @@ object HandRank extends IntEnum[HandRank] {
   val values = findValues
 
   case object Unknown       extends HandRank(0)
-  case object HCard      extends HandRank(1)
+  case object HCard         extends HandRank(1)
   case object Pair          extends HandRank(2)
   case object TwoPair       extends HandRank(3)
   case object ThreeOfAKind  extends HandRank(4)
@@ -523,8 +523,8 @@ object Main {
     println( itn )
 
     val dealer = new Dealer()
-    var h: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
-    val num_players = 6
+    var b: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
+    val num_players = 2
     
 
 
@@ -534,30 +534,40 @@ object Main {
 
 //    println( Math.nck( 52, 2 ) )
 
+      var h1:Hand = Hand("J♥|9♥")
+      var h2:Hand = Hand("Q♣|T♠")
+      var h3:Hand = Hand("K♦|J♣")
 
-      val ps = for ( i <- 1 to num_players ) yield {
-        val h = dealer.deal(2) 
-        dealer.ensureRemoved( h )
-        h
-      }           
+      val ps:List[Hand]  = List(h1, h2, h3)
+      // val ps = for ( i <- 1 to num_players ) yield {
+      //   val h = dealer.deal(2) 
+      //   dealer.ensureRemoved( h )
+      //   h
+      // }           
 
-      h = dealer.deal( 3 )
-      dealer.ensureRemoved( h.cards )
+      val b = dealer.deal( 3 )
+      dealer.ensureRemoved( b )
 //      printf("%s -> %s\n", h.sorted, Hand.rank2( h ) )
 
 //      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
+      println("Flop:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
 
-println(    Hand.rank2( h1 ) )
+//println(    Hand.rank2( h ) )
 
       val t = dealer.deal(1)
-      h.merge(t)
-//      println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
+      dealer.ensureRemoved( t )
+      b.merge(t)
+      //println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
+      println("Turn:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
 
       val r = dealer.deal(1)
-      h.merge(r)
-//      println("River: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+      dealer.ensureRemoved( r )
+      b.merge(r)
+      println("River: " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+    
 
       dealer.newDeck() 
+      println("")
     }
 
 //   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
