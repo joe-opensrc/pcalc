@@ -477,6 +477,10 @@ object Dealer {
     this.makeHand( d.take(n) ) 
   }
 
+  def deal( r: Rank, n: Int ): Unit = {
+    assert(n <= 4, "Can't have more than 4 of the same rank!")
+  }
+
   def makeHand( cs: Cards ): Hand = { 
     new Hand( cs ) 
   }
@@ -509,6 +513,30 @@ class Dealer( val _d: Cards = Dealer.newDeck ) {
   def newDeck() = { this.deck = Dealer.newDeck }
   def shuffleDeck() = { this.deck = Dealer.shuffle( this.deck ) }
   def deal( n: Int ): Hand = { val h = Dealer.deal( this.deck, n ); this.deck = this.deck.drop(n); h }
+
+  def deal( r: Rank, n: Int ): Hand = { 
+    assert( n <= 4, "Can't have more than 4 of the same rank!") 
+    var crds = Dealer.makeHand( this.deck.filter( _.rank == r ).take(n) )
+    ensureRemoved( crds )
+    crds
+  }
+
+  def deal( s: Suit, n: Int ): Hand = { 
+    assert( n <= 14, "Can't have more than 14 of the same suit!") 
+    var crds = Dealer.makeHand( this.deck.filter( _.suit == s ).take(n) )
+    ensureRemoved( crds )
+    crds
+  }
+
+  def dealTemplate( s: Seq[Any] ): Unit = { 
+    val x = s match {
+      case s: Rank => s
+      case s: Suit => s
+      case _ => ()
+    }
+  }
+
+
   def ensureRemoved( a: Any ) = { this.deck = Dealer.ensureRemoved( this.deck, a ) }
 }
 
@@ -522,58 +550,66 @@ object Main {
   def main( args: Array[String] ): Unit = {
 
     val itn = args.lift(0).getOrElse("10").toInt
-    println( itn )
+    println( "Iter: " + itn )
 
     val dealer = new Dealer()
-    var b: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
-    val num_players = 2
+    dealer.shuffleDeck()
+
+    val f1 = dealer.deal( Club, 3 )
+    val f2 = dealer.deal( Heart, 2 ) 
+    
+    println( Hand.merge(f1, f2) )
+
+    //var b: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
+
+    //val num_players = 2
     
 
 
-    for ( i <- 1 to itn ) { //33784560 ){
+    // for ( i <- 1 to itn ) { //33784560 ){
 
-      dealer.shuffleDeck()
+     // dealer.shuffleDeck()
 
-//    println( Math.nck( 52, 2 ) )
+////    println( Math.nck( 52, 2 ) )
 
-      var h1:Hand = Hand("J♥|9♥")
-      var h2:Hand = Hand("Q♣|T♠")
-      var h3:Hand = Hand("K♦|J♣")
+     // var h1:Hand = Hand("J♥|9♥")
+     // var h2:Hand = Hand("Q♣|T♠")
+    //  var h3:Hand = Hand("K♦|J♣")
 
-      val ps:List[Hand]  = List(h1, h2, h3)
-      // val ps = for ( i <- 1 to num_players ) yield {
-      //   val h = dealer.deal(2) 
-      //   dealer.ensureRemoved( h )
-      //   h
-      // }           
+    //  val ps:List[Hand]  = List(h1, h2, h3)
+    //  // val ps = for ( i <- 1 to num_players ) yield {
+    //  //   val h = dealer.deal(2) 
+    //  //   dealer.ensureRemoved( h )
+    //  //   h
+    //  // }           
 
-      val b = dealer.deal( 3 )
-      dealer.ensureRemoved( b )
-//      printf("%s -> %s\n", h.sorted, Hand.rank2( h ) )
+    //  val b = dealer.deal( 3 )
+    //  dealer.ensureRemoved( b )
+////      printf("%s -> %s\n", h.sorted, Hand.rank2( h ) )
 
-//      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
-      println("Flop:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+////      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
+    //  println("Flop:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
 
-//println(    Hand.rank2( h ) )
+////println(    Hand.rank2( h ) )
 
-      val t = dealer.deal(1)
-      dealer.ensureRemoved( t )
-      b.merge(t)
-      //println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
-      println("Turn:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+    //  val t = dealer.deal(1)
+    //  dealer.ensureRemoved( t )
+    //  b.merge(t)
+    //  //println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
+    //  println("Turn:  " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
 
-      val r = dealer.deal(1)
-      dealer.ensureRemoved( r )
-      b.merge(r)
-      println("River: " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+    //  val r = dealer.deal(1)
+    //  dealer.ensureRemoved( r )
+    //  b.merge(r)
+    //  println("River: " + b + "," + h1 + "," + h2 + "," + h3 + ",Hs: " + ps.map( Hand.merge(b, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
     
 
-      dealer.newDeck() 
-      println("")
-    }
+    //  dealer.newDeck() 
+    //  println("")
+    //}
 
-//   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
-//    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
+////   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
+////    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
 
   }
 }
