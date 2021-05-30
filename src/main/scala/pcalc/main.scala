@@ -53,10 +53,6 @@ case object Suit extends Enum[Suit] {
 
 }
 
-sealed abstract class HandRank( val value: Int ) extends IntEnumEntry with Ordered[HandRank] with Product with Serializable {
-  override def compare( that: HandRank ) = { this.value - that.value }
-  def equals (that: HandRank ) = { this.value == that.value }
-}
 
 object HandRank extends IntEnum[HandRank] {
 
@@ -75,6 +71,12 @@ object HandRank extends IntEnum[HandRank] {
   case object RoyalFlush    extends HandRank(10)
  
 }
+
+sealed abstract class HandRank( val value: Int ) extends IntEnumEntry with Ordered[HandRank] with Product with Serializable {
+  override def compare( that: HandRank ) = { this.value - that.value }
+  def equals (that: HandRank ) = { this.value == that.value }
+}
+
 
 object Card {
 
