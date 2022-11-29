@@ -547,7 +547,7 @@ object Main {
 
 //      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
 
-println(    Hand.rank2( h1 ) )
+println(    Hand.rank2( h ) )
 
       val t = dealer.deal(1)
       h.merge(t)
