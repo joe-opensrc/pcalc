@@ -167,7 +167,6 @@ class Hand( private var _cards: Cards  ) { //extends Ordered[Hand] {
 
   override def hashCode: Int = {
     val hc = this.cards.map( x => x.hashCode ).sum
-//    println( "hc: " + hc + " -> " + this.cards ) 
     hc
   }
 
@@ -196,29 +195,6 @@ object Hand {
  
   }
 
-  /** check for straights: 
-        return Hand.Rank.RoyalFlush, 
-        return Hand.Rank.StraightFlush, 
-
-        Hand.Rank.Straight 
-
-        if Hand.Rank.Straight or None
-          check for: 
-            return Hand.Rank.FourOfAKind
-            return Hand.Rank.FullHouse
-            Hand.Rank.TwoPair
-            Hand.Rank.Pair
-
-            check for:
-              return Hand.Rank.Flush
-  
-            if None:  
-              return Hand.Rank.{TwoPair,Pair,HCard}
-         
-        
-
-  */
-
   def cardsAreSequential( cs: Cards ) = {
     cs.sliding(2).map{ 
       case Seq(x,y) => Rank.valuesToIndex( y.rank ) - Rank.valuesToIndex( x.rank )
@@ -239,7 +215,7 @@ object Hand {
  
     val rankMap = cs.sorted.reverse.groupBy( _.rank )
 
-    // ranksOne -- cards for which there is only possibility
+    // ranksOne -- cards for which there is only one possibility
     val ranksOne = rankMap.filter( _._2.size == 1 ).values.flatten.toList
     // ranksMany -- cards which have duplicate rank
     val ranksMany = rankMap.filter( _._2.size > 1 )
@@ -254,13 +230,6 @@ object Hand {
       case (1,2) | (2,4) | (1,3) | (0,0) => true
       case _ => false
     }
-
-    //println("rankMap: " + rankMap)
-    //println("ranksOne: " + ranksOne)
-    // wired duplicates sneeking back in
-    //println("ranksMany: " + ranksMany ) //.values.flatten.map( _ :: ranksOne ).map( _.sorted ).map( _.sliding(5).toList ).flatten.collect{ case x if cardsAreSequential(x) => x }.toList ) 
-    //println("ranksManyCount: " + ranksManyCount ) 
-    //println("canBeStr8: " + canBeStr8 )
 
     val str8s = canBeStr8 match {
 
@@ -295,7 +264,6 @@ object Hand {
      }
 
 
-  //println("str8s: " + str8s)
   return str8s
 
 } 
@@ -308,10 +276,9 @@ object Hand {
     return if( h1._1 > h2._1 ) h1 else h2
     
   }
-                 //♠ ♣ ♥ ♦
+
+  //♠ ♣ ♥ ♦
   def rank2( h: Hand ): (HandRank,Cards) = {
-//    val cs = Hand("8♥|9♦|T♦|J♣|Q♠|K♦|A♠").cards
-//    val cs = Hand("2♣|3♠|6♠|6♦|9♠|T♦|T♦").cards
 
     val cs = h.cards
 
@@ -332,7 +299,6 @@ object Hand {
 
     if ( resHand._1 <= Straight ){
 
-      //println("resHanded: " + resHand)
       val sets = ListMap(cs.groupBy( _.rank ).filter( _._2.size >= 2 ).groupBy( _._2.size ).toSeq.sortWith( _._1 < _._1 ):_*)
    
       val sets_flat = sets.map( _._2 ).map( _.toSeq.sortWith( _._1 < _._1 ).flatMap( _._2 ) ).flatten.toList
@@ -346,7 +312,6 @@ object Hand {
           twos.size match {
             case 2 => getHighest( resHand, ( Pair, Dealer.ensureRemoved( cs, twos ).takeRight(3) ++ twos ) )
             case 4 | 6 => getHighest( resHand, ( TwoPair, Dealer.ensureRemoved( cs, twos ).takeRight(1) ++ twos ) ) //getHighest( resHand, (TwoPair, twos) ) // or a str8
-//            case 6 => getHighest( resHand, ( TwoPair, Dealer.ensureRemoved( cs, twos.takeRight(4)).takeRight(1) ++ twos.takeRight(4)  ) ) // 6 cards are the same, can't be a str8
          }
 
         case List(2,3) | List(3) => 
@@ -438,12 +403,9 @@ object Main {
     
 
 
-    for ( i <- 1 to itn ) { //33784560 ){
+    for ( i <- 1 to itn ) {
 
       dealer.shuffleDeck()
-
-//    println( Math.nck( 52, 2 ) )
-
 
       val ps = for ( i <- 1 to num_players ) yield {
         val h = dealer.deal(2) 
