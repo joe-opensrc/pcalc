@@ -524,7 +524,7 @@ object Main {
 
     val dealer = new Dealer()
     var h: Hand =  Hand("T♣") // needed because I don't fully understand 'var' usage
-    val num_players = 6
+    val num_players = 2
     
 
 
@@ -543,25 +543,23 @@ object Main {
 
       h = dealer.deal( 3 )
       dealer.ensureRemoved( h.cards )
-//      printf("%s -> %s\n", h.sorted, Hand.rank2( h ) )
+      printf("Flop: %s -> %s\n", h.sorted, Hand.rank2( h ) )
 
-//      println("Flop: " + h + ", HoleCards: " + ps.map( _.sorted ) ) 
-
-println(    Hand.rank2( h ) )
+      println("HoleCards: " + ps.map( _.sorted ) ) 
+      println("PlayerHands: " + ps.map( (hp: Hand) => ( Hand.rank2( Hand.merge(h,hp).sorted ) ) ) )
+      // println(    Hand.rank2( h ) )
 
       val t = dealer.deal(1)
       h.merge(t)
-//      println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
+      println("Turn: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ).map( _._1 )) 
 
       val r = dealer.deal(1)
       h.merge(r)
-//      println("River: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+      println("River: " + h + ", Hs: " + ps.map( Hand.merge(h, _).sorted ).map( Hand.rank2( _ ) ) ) //.map( _._1 )) 
+
+      println("")
 
       dealer.newDeck() 
     }
-
-//   val ranksOne = for { c <- cards; b <- cards if (c.rank == b.rank && c.suit != b.suit ) || c.rank != b.rank  } yield { val h = new Hand( List(c,b) ); h.sort(); println(h) ; h } //(c.hashCode, b.hashCode, h.hashCode, h)  } 
-//    println( for ( c1 <- csssplit(0); c2 <- csssplit(1) ) yield { new Hand( c1,c2 ) } )
-
   }
 }
