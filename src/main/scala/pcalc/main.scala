@@ -63,7 +63,7 @@ object HandRank extends IntEnum[HandRank] {
   val values = findValues
 
   case object Unknown       extends HandRank(0)
-  case object HCard      extends HandRank(1)
+  case object HighCard      extends HandRank(1)
   case object Pair          extends HandRank(2)
   case object TwoPair       extends HandRank(3)
   case object ThreeOfAKind  extends HandRank(4)
@@ -305,7 +305,7 @@ object Hand {
 
       resHand = sets.keys.toList.sorted match {
 
-        case List()    => getHighest( ( HCard, cs.takeRight(5).sorted ), resHand )  
+        case List()    => getHighest( ( HighCard, cs.takeRight(5).sorted ), resHand )  
         case List(4) | List(_,4)  => (FourOfAKind, sets_flat.takeRight(4))
         case List(2) => 
           val twos = sets_flat.takeRight(4) 
