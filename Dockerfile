@@ -1,22 +1,19 @@
-FROM debian:latest
+FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils lsof strace vim procps tree bc openjdk-8-jre-headless openjdk-8-jdk-headless
+RUN groupadd -g 1000 sbt
+RUN useradd -u 1000 -g 1000 -m -d /home/sbt sbt
 
-ENV PATH=/opt/scala-2.12.6/bin:${PATH} \
-    LANG=C.UTF-8 \
-    JAVA_HOME=/usr/bin \ 
-    JAVA_VERSION=8u171 \
-    JAVA_DEBIAN_VERSION=8u171-b11-1~deb9u1-b11 
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN useradd -u 1000 -m -d /home/sbt -s /bin/bash sbt
-COPY sbt-1.1.6.deb /tmp/ 
-RUN dpkg -i /tmp/sbt-1.1.6.deb
+RUN apt-get update && apt-get install -y --no-install-recommends less strace iproute2 vim lsof bash-completion git apt-transport-https curl gnupg ca-certificates  
 
-COPY scala-2.12.6.tgz /tmp/scala-2.12.6.tgz
-RUN tar -C /opt -zxvf /tmp/scala-2.12.6.tgz
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" >/etc/apt/sources.list.d/sbt.list
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | >/etc/apt/sources.list.d/sbt_old.list
+RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scala-sbt-release.gpg --import
+RUN chmod 644 /etc/apt/trusted.gpg.d/scala-sbt-release.gpg
 
-COPY home/sbt /home/sbt
-RUN chown -R sbt:sbt /home/sbt 
+RUN apt-get update && apt-get install -y --no-install-recommends sbt openjdk-11-jdk fonts-freefont-ttf
 
+ENV LANG=C.UTF-8
 WORKDIR /home/sbt
 USER sbt
