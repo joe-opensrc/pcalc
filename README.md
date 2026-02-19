@@ -15,16 +15,28 @@ cd pcalc
 docker build -t joe-opensrc/sbt:v1.12.3 .  # or whatever name you like ;)
 ```
 
-If you're using docker in a non-suid mode, \
-you will have to set the workdir/ to the appropriate user \
-(which ironically requires sudo on the host)
-
-```bash 
-chown -R 101001 workdir/
-```
-
-#### Running Container 
+#### Running the container 
 
 ```bash
 docker run -v "$(pwd)"/workdir:/home/sbtuser -it joe-opensrc/sbt:1.12.3 sbt ~run 
+```
+
+#### Possible env requirements
+
+If you're using docker in a non-suid mode, \
+you will probably need to set the appropriate \ 
+permissions / ownership on the workdir.
+
+You can try something like this:
+
+Assuming /etc/subgid has an entry similar to: \
+yourgroup:100000:65536
+
+```bash 
+# set group ownership
+# note, sbtuser is 1001 inside the container
+chown -R :101001 workdir/
+
+# set group permissions to the user permissions
+chmod -R +g=u workdir/   
 ```
