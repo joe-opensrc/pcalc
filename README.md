@@ -9,7 +9,7 @@ The main aim being to learn me some scala :)
 
 #### Install / Dev-Setup:
 
-```shell
+```bash
 git clone https://github.com/joe-opensrc/pcalc
 cd pcalc
 docker build -t your-repo/ubuntu-sbt .  # or whatever name you like ;)
