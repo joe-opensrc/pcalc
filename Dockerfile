@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:noble-20260210.1
 
 RUN groupadd -g 1000 sbt
 RUN useradd -u 1000 -g 1000 -m -d /home/sbt sbt
