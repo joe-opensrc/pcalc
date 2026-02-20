@@ -38,5 +38,5 @@ yourgroup:100000:65536
 chown -R :101001 workdir/
 
 # set group permissions to the user permissions
-chmod -R +g=u workdir/   
+chmod -R g=u workdir/
 ```
