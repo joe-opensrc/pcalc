@@ -24,7 +24,7 @@ docker run -v "$(pwd)"/workdir:/home/sbtuser -it joe-opensrc/sbt:1.12.3 sbt ~run
 #### Possible env requirements
 
 If you're using docker in a non-suid mode, \
-you will probably need to set the appropriate \ 
+you will probably need to set the appropriate \
 permissions / ownership on the workdir.
 
 You can try something like this:
